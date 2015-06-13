@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="196dp"
+    android:background="@color/cbr_color_light_gray"
+    android:padding="16dp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/image_avatar_my_page"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="16dp"
+        fresco:placeholderImage="@drawable/shape_circle_001" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@+id/image_avatar_my_page"
+        android:layout_toRightOf="@+id/image_avatar_my_page"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/container_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/text_user_name_my_page"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="16sp"
+                tools:text="Sou Hatake" />
+
+            <TextView
+                android:id="@+id/text_location_my_page"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+
+                android:gravity="start"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="12sp"
+                tools:text="Japan, Tokyo" />
+
+            <TextView
+                android:id="@+id/text_joined_date_my_page"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="start"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="12sp"
+                tools:text="Joined on 29, Dec 2012" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_following"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/container_user_info"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_following_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="-"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="24sp"
+                tools:text="100" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Following"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_followers"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/container_user_info"
+            android:layout_toEndOf="@+id/container_following"
+            android:layout_toRightOf="@+id/container_following"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_followers_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="-"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="24sp"
+                tools:text="30" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Followers"
+                android:textColor="@color/cbr_color_100"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

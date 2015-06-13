@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_1"
+            android:checked="true"
+            android:icon="@android:drawable/ic_btn_speak_now"
+            android:title="Event" />
+        <item
+            android:id="@+id/nav_item_gist"
+            android:icon="@android:drawable/ic_delete"
+            android:title="Gist" />
+        <item
+            android:id="@+id/nav_item_starred"
+            android:icon="@android:drawable/ic_delete"
+            android:title="Starred" />
+
+        <item
+            android:id="@+id/navigation_sub_header"
+            android:title="sub header">
+            <menu>
+                <item
+                    android:id="@+id/navigation_sub_item_1"
+                    android:icon="@android:drawable/ic_dialog_alert"
+                    android:title="sub 3" />
+                <item
+                    android:id="@+id/navigation_sub_item_2"
+                    android:icon="@android:drawable/ic_dialog_email"
+                    android:title="sub 2" />
+            </menu>
+        </item>
+    </group>
+</menu>
