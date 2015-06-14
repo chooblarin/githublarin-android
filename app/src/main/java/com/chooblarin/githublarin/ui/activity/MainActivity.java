@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     @InjectView(R.id.text_user_login_drawer)
     TextView userLoginText;
 
+    private Toolbar toolbar;
     private SearchView searchView;
 
     @Override
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
         setupToolbar();
 
@@ -99,26 +100,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.search_menu_search_view);
         searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Search Repository");
-        searchView.setIconifiedByDefault(true);
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (!TextUtils.isEmpty(query)) {
-                    getSupportFragmentManager().popBackStack();
-                    Intent intent = SearchResultActivity.createIntent(MainActivity.this, query);
-                    startActivity(intent);
-                }
-                searchView.clearFocus();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
+        setupSearchView();
         return true;
     }
 
@@ -134,6 +116,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
@@ -141,7 +132,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-        setup();
+        setupUserData();
     }
 
     @Override
@@ -192,7 +183,7 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.container_content_main, fragment).commit();
     }
 
-    private void setup() {
+    private void setupUserData() {
         Subscription user = service.user()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -206,5 +197,33 @@ public class MainActivity extends AppCompatActivity
                     throwable.printStackTrace();
                 });
         subscriptions.add(user);
+    }
+
+    private void setupSearchView() {
+        searchView.setQueryHint("Search Repository");
+        searchView.setIconifiedByDefault(true);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnFocusChangeListener((_view, hasFocus) -> {
+            if (!hasFocus) {
+                toolbar.collapseActionView();
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!TextUtils.isEmpty(query)) {
+                    getSupportFragmentManager().popBackStack();
+                    Intent intent = SearchResultActivity.createIntent(MainActivity.this, query);
+                    startActivity(intent);
+                }
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 }
