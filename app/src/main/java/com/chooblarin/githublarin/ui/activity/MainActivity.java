@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.search_menu_search_view);
         searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Search Repository");
         searchView.setIconifiedByDefault(true);
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
