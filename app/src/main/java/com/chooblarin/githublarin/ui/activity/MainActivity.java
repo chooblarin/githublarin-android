@@ -9,11 +9,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
     @InjectView(R.id.text_user_login_drawer)
     TextView userLoginText;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.search_menu_search_view);
+        searchView = (SearchView) menuItem.getActionView();
+        searchView.setIconifiedByDefault(true);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!TextUtils.isEmpty(query)) {
+                    getSupportFragmentManager().popBackStack();
+                    Intent intent = SearchResultActivity.createIntent(MainActivity.this, query);
+                    startActivity(intent);
+                }
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
@@ -149,20 +175,19 @@ public class MainActivity extends AppCompatActivity
     private void showContent(int menuId) {
         switch (menuId) {
             case R.id.nav_item_gist:
-                showFragment(new GistFragment());
+                showFragment(new GistFragment(), false);
                 break;
 
             case R.id.nav_item_starred:
-                showFragment(new StarredFragment());
+                showFragment(new StarredFragment(), false);
                 break;
         }
     }
 
-    private void showFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container_content_main, fragment)
-                .commit();
+    private void showFragment(Fragment fragment, boolean stack) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (stack) transaction.addToBackStack(null);
+        transaction.replace(R.id.container_content_main, fragment).commit();
     }
 
     private void setup() {

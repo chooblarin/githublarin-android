@@ -19,6 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.SearchResultActivity">
+        </activity>
         <activity android:name=".ui.activity.MyPageActivity">
         </activity>
         <service android:name=".service.GitHubApiService"
