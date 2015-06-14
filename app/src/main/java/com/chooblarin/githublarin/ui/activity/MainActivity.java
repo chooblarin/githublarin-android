@@ -95,17 +95,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-        setup();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        service = null;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem menuItem = menu.findItem(R.id.search_menu_search_view);
@@ -147,6 +136,18 @@ public class MainActivity extends AppCompatActivity
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
+        setup();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        service = null;
+    }
+
 
     @OnClick({R.id.container_nav_header})
     public void showMyPage() {
@@ -194,12 +195,12 @@ public class MainActivity extends AppCompatActivity
         Subscription user = service.user()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(user1 -> {
-                    if (null != user1.avatarUrl) {
-                        avatarImage.setImageURI(Uri.parse(user1.avatarUrl));
+                .subscribe(_user -> {
+                    if (null != _user.avatarUrl) {
+                        avatarImage.setImageURI(Uri.parse(_user.avatarUrl));
                     }
-                    userLoginText.setText(user1.login);
-                    userNameText.setText(user1.name);
+                    userLoginText.setText(_user.login);
+                    userNameText.setText(_user.name);
                 }, throwable -> {
                     throwable.printStackTrace();
                 });
