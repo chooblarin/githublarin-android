@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.service.GitHubApiService;
-import com.chooblarin.githublarin.ui.adapter.StarredAdapter;
+import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,7 +31,7 @@ public class StarredFragment extends Fragment
         implements ServiceConnection {
 
     private GitHubApiService service;
-    private StarredAdapter starredAdapter;
+    private RepositoryAdapter repositoryAdapter;
     private CompositeSubscription subscriptions;
 
     @InjectView(R.id.recyclerview_starred)
@@ -43,7 +43,7 @@ public class StarredFragment extends Fragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        starredAdapter = new StarredAdapter(activity);
+        repositoryAdapter = new RepositoryAdapter(activity);
     }
 
     @Nullable
@@ -59,7 +59,7 @@ public class StarredFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(starredAdapter);
+        recyclerView.setAdapter(repositoryAdapter);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class StarredFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
                     loadingProgress.setVisibility(View.GONE);
-                    starredAdapter.setData(_repositories);
+                    repositoryAdapter.setData(_repositories);
                 }, throwable -> {
                     throwable.printStackTrace();
                 });

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.service.GitHubApiService;
-import com.chooblarin.githublarin.ui.adapter.StarredAdapter;
+import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.ButterKnife;
@@ -33,7 +33,7 @@ public class MyPageActivity extends AppCompatActivity
         implements ServiceConnection {
 
     private GitHubApiService service;
-    private StarredAdapter starredAdapter;
+    private RepositoryAdapter repositoryAdapter;
 
     @InjectView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -74,9 +74,9 @@ public class MyPageActivity extends AppCompatActivity
 
         collapsingToolbarLayout.setTitle("chooblarin");
 
-        starredAdapter = new StarredAdapter(this);
+        repositoryAdapter = new RepositoryAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(starredAdapter);
+        recyclerView.setAdapter(repositoryAdapter);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class MyPageActivity extends AppCompatActivity
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
-                    starredAdapter.setData(_repositories);
+                    repositoryAdapter.setData(_repositories);
                 }, throwable -> {
                     throwable.printStackTrace();
                 });

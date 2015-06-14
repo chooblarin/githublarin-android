@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:id="@+id/text_full_name_starred"
+        android:id="@+id/text_full_name_repository"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/cbr_color_100"
@@ -14,11 +14,11 @@
         tools:text="facebook / stetho"/>
 
     <TextView
-        android:id="@+id/text_description_starred"
+        android:id="@+id/text_description_repository"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/text_full_name_starred"
+        android:layout_below="@+id/text_full_name_repository"
         android:layout_marginTop="4dp"
         android:textColor="@color/cbr_color_light_gray"
         android:textSize="14sp"

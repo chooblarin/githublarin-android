@@ -13,7 +13,7 @@ import com.chooblarin.githublarin.model.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.ViewHolder> {
+public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -22,22 +22,22 @@ public class StarredAdapter extends RecyclerView.Adapter<StarredAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
-            fullName = (TextView) itemView.findViewById(R.id.text_full_name_starred);
-            description = (TextView) itemView.findViewById(R.id.text_description_starred);
+            fullName = (TextView) itemView.findViewById(R.id.text_full_name_repository);
+            description = (TextView) itemView.findViewById(R.id.text_description_repository);
         }
     }
 
     private LayoutInflater inflater;
     private List<Repository> repositories;
 
-    public StarredAdapter(Context context) {
+    public RepositoryAdapter(Context context) {
         this.inflater = LayoutInflater.from(context);
         this.repositories = new ArrayList<>();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.list_item_starred_repositories, parent, false);
+        View view = inflater.inflate(R.layout.list_item_repository, parent, false);
         return new ViewHolder(view);
     }
 
