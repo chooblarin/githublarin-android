@@ -1,5 +1,6 @@
-package com.chooblarin.githublarin.api;
+package com.chooblarin.githublarin.api.client;
 
+import com.chooblarin.githublarin.api.response.SearchResponse;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
@@ -8,9 +9,16 @@ import java.util.List;
 
 import retrofit.http.GET;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import rx.Observable;
 
 public interface GitHubClient {
+
+    @GET("/search/{category}")
+    Observable<SearchResponse> query(@Path("category") String category,
+                                     @Query("q") String keyword,
+                                     @Query("sort") String sort,
+                                     @Query("order") String order);
 
     @GET("/gists")
     Observable<List<Gist>> gists();

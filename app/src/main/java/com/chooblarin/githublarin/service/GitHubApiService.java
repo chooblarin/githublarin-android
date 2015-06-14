@@ -7,7 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.chooblarin.githublarin.R;
-import com.chooblarin.githublarin.api.GitHubClient;
+import com.chooblarin.githublarin.api.client.GitHubClient;
+import com.chooblarin.githublarin.api.response.SearchResponse;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
@@ -53,6 +54,10 @@ public class GitHubApiService extends Service {
                     .build()
                     .create(GitHubClient.class);
         }
+    }
+
+    public Observable<SearchResponse> searchRepository(String keyword, boolean reverse) {
+        return gitHubClient.query("repositories", keyword, "stars", reverse ? "desc" : "asc");
     }
 
     public Observable<User> user() {

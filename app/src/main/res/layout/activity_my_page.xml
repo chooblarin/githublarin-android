@@ -7,7 +7,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="196dp"
+        android:layout_height="208dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -25,8 +25,7 @@
                 layout="@layout/layout_collapsing_my_page"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax" />
+                android:fitsSystemWindows="true" />
 
             <include
                 layout="@layout/toolbar"

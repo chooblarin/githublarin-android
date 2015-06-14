@@ -28,7 +28,17 @@ public class User {
     @SerializedName("html_url")
     public String htmlUrl;
 
+    @Expose
+    @SerializedName("public_repos")
+    public int publicRepos;
+
+    @Expose
+    @SerializedName("public_gists")
+    public int publicGists;
+
+    @Expose
     public int following;
 
+    @Expose
     public int followers;
 }
