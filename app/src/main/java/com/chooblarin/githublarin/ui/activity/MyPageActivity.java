@@ -14,6 +14,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
@@ -58,6 +60,9 @@ public class MyPageActivity extends AppCompatActivity
 
     @InjectView(R.id.recyclerview)
     RecyclerView recyclerView;
+
+    @InjectView(R.id.progress_loading_my_repo)
+    ProgressBar loadingProgress;
 
     CompositeSubscription subscriptions;
 
@@ -135,12 +140,16 @@ public class MyPageActivity extends AppCompatActivity
                     throwable.printStackTrace();
                 });
 
-        Subscription starred = service.starredRepositories()
+        loadingProgress.setVisibility(View.VISIBLE);
+
+        Subscription starred = service.myRepositories()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
+                    loadingProgress.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);
                 }, throwable -> {
+                    loadingProgress.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
 

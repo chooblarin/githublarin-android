@@ -68,6 +68,10 @@ public class GitHubApiService extends Service {
         return gitHubClient.starredRepositories("chooblarin");
     }
 
+    public Observable<List<Repository>> myRepositories() {
+        return gitHubClient.usersRepositories("chooblarin");
+    }
+
     public Observable<List<Gist>> gists() {
         return gitHubClient.gists();
     }

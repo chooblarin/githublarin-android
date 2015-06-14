@@ -26,6 +26,9 @@ public interface GitHubClient {
     @GET("/users/{username}")
     Observable<User> user(@Path("username") String username);
 
+    @GET("/users/{username}/repos")
+    Observable<List<Repository>> usersRepositories(@Path("username") String username);
+
     @GET("/users/{username}/starred")
     Observable<List<Repository>> starredRepositories(@Path("username") String username);
 }
