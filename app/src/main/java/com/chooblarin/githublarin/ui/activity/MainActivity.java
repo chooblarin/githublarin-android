@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.fragment.GistFragment;
 import com.chooblarin.githublarin.ui.fragment.StarredFragment;
@@ -39,8 +40,24 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class MainActivity extends AppCompatActivity
         implements ServiceConnection {
 
+    private static final String EXTRA_USER = "extra_user";
+
+    public static Intent createIntent(Context context) {
+        return new Intent(context, MainActivity.class);
+    }
+
+    public static Intent createIntent(Context context, User user) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(EXTRA_USER, user);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
+
     private GitHubApiService service;
     private CompositeSubscription subscriptions;
+
+    @InjectView(R.id.toolbar_main)
+    Toolbar toolbar;
 
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
@@ -57,19 +74,22 @@ public class MainActivity extends AppCompatActivity
     @InjectView(R.id.text_user_login_drawer)
     TextView userLoginText;
 
-    private Toolbar toolbar;
     private SearchView searchView;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        ButterKnife.inject(this);
         setSupportActionBar(toolbar);
         setupToolbar();
 
-        ButterKnife.inject(this);
+        user = getIntent().getParcelableExtra(EXTRA_USER);
+        if (null != user) {
+            bindUser(user);
+        }
 
         setupDrawerContent();
     }
@@ -132,7 +152,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-        setupUserData();
+        if (null == user) {
+            setupUserData();
+        }
     }
 
     @Override
@@ -188,15 +210,20 @@ public class MainActivity extends AppCompatActivity
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
-                    if (null != _user.avatarUrl) {
-                        avatarImage.setImageURI(Uri.parse(_user.avatarUrl));
-                    }
-                    userLoginText.setText(_user.login);
-                    userNameText.setText(_user.name);
+                    this.user = _user;
+                    bindUser(_user);
                 }, throwable -> {
                     throwable.printStackTrace();
                 });
         subscriptions.add(user);
+    }
+
+    private void bindUser(User u) {
+        if (null != u.avatarUrl) {
+            avatarImage.setImageURI(Uri.parse(u.avatarUrl));
+        }
+        userLoginText.setText(u.login);
+        userNameText.setText(u.name);
     }
 
     private void setupSearchView() {

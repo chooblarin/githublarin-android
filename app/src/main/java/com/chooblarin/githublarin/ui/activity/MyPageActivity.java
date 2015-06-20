@@ -142,7 +142,7 @@ public class MyPageActivity extends AppCompatActivity
 
         loadingProgress.setVisibility(View.VISIBLE);
 
-        Subscription starred = service.myRepositories()
+        Subscription starred = service.repositories()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
