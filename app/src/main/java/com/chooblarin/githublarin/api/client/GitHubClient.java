@@ -1,5 +1,6 @@
 package com.chooblarin.githublarin.api.client;
 
+import com.chooblarin.githublarin.api.response.FeedsResponse;
 import com.chooblarin.githublarin.api.response.SearchResponse;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
@@ -19,6 +20,8 @@ public interface GitHubClient {
                                      @Query("q") String keyword,
                                      @Query("sort") String sort,
                                      @Query("order") String order);
+    @GET("/feeds")
+    Observable<FeedsResponse> feeds();
 
     @GET("/gists")
     Observable<List<Gist>> gists();

@@ -91,6 +91,9 @@ public class GitHubApiService extends Service {
         this.user = user;
     }
 
+    public void feeds() {
+    }
+
     private GitHubClient createGitHubApiClient(@Nullable String authorization) {
         return new RestAdapter.Builder()
                 .setRequestInterceptor(request -> {
