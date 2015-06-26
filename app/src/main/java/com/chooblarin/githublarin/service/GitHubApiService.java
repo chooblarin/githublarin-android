@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.client.GitHubClient;
 import com.chooblarin.githublarin.api.http.Header;
@@ -20,6 +21,7 @@ import com.squareup.okhttp.Credentials;
 import java.util.List;
 
 import retrofit.RestAdapter;
+import retrofit.RestAdapter.LogLevel;
 import rx.Observable;
 
 public class GitHubApiService extends Service {
@@ -103,6 +105,7 @@ public class GitHubApiService extends Service {
                     }
                 })
                 .setEndpoint(GITHUB_BASE_URL)
+                .setLogLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)
                 .build()
                 .create(GitHubClient.class);
     }

@@ -42,10 +42,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String EXTRA_USER = "extra_user";
 
-    public static Intent createIntent(Context context) {
-        return new Intent(context, MainActivity.class);
-    }
-
     public static Intent createIntent(Context context, User user) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(EXTRA_USER, user);

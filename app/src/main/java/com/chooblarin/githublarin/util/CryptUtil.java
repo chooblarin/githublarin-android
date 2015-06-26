@@ -2,6 +2,7 @@ package com.chooblarin.githublarin.util;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 
 import com.facebook.crypto.Crypto;
 import com.facebook.crypto.Entity;
@@ -17,32 +18,35 @@ public class CryptUtil {
     @Nullable
     public static String encrypt(Context context, String name, String planeText) {
         Crypto crypto = getCrypto(context);
+        String encryptedString = "";
         if (null != crypto) {
             try {
                 byte[] encrypted = crypto
                         .encrypt(planeText.getBytes("utf-8"), new Entity(name));
-                return new String(encrypted, "utf-8");
+                encryptedString = Base64.encodeToString(encrypted, Base64.DEFAULT);
 
             } catch (KeyChainException | CryptoInitializationException | IOException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return encryptedString;
     }
 
     @Nullable
     public static String decrypt(Context context, String name, String cipherText) {
         Crypto crypto = getCrypto(context);
+        String decryptedString = "";
         if (null != crypto) {
             try {
-                byte[] decrypted = crypto.decrypt(cipherText.getBytes("utf-8"), new Entity(name));
-                return new String(decrypted, "utf-8");
+                byte[] byteText = Base64.decode(cipherText, Base64.DEFAULT);
+                byte[] decrypted = crypto.decrypt(byteText, new Entity(name));
+                decryptedString = new String(decrypted, "utf-8");
 
             } catch (KeyChainException | CryptoInitializationException | IOException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return decryptedString;
     }
 
     @Nullable

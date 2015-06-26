@@ -43,11 +43,7 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         subscriptions = new CompositeSubscription();
         Context context = getApplicationContext();
         Intent intent = new Intent(context, GitHubApiService.class);
@@ -55,16 +51,11 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        subscriptions.unsubscribe();
-        getApplicationContext().unbindService(this);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.reset(this);
+        subscriptions.unsubscribe();
+        getApplicationContext().unbindService(this);
     }
 
     @OnClick({R.id.text_login_button})
@@ -91,8 +82,7 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
         String password = Credential.password(context);
 
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-            startActivity(MainActivity.createIntent(LoginActivity.this));
-            finish();
+            login(username, password);
         }
     }
 
