@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity
         if (null == user) {
             setupUserData();
         }
+        service.feeds();
     }
 
     @Override

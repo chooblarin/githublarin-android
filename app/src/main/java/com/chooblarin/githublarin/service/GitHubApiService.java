@@ -1,5 +1,6 @@
 package com.chooblarin.githublarin.service;
 
+import android.app.DownloadManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -7,22 +8,32 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.client.GitHubClient;
 import com.chooblarin.githublarin.api.http.Header;
+import com.chooblarin.githublarin.api.response.FeedsResponse;
 import com.chooblarin.githublarin.api.response.SearchResponse;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
 import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.LogLevel;
+import retrofit.client.OkClient;
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class GitHubApiService extends Service {
 
@@ -31,6 +42,7 @@ public class GitHubApiService extends Service {
     public final static String GITHUB_BASE_URL = "https://api.github.com";
 
     private IBinder binder = new GitHubApiBinder();
+    private OkHttpClient okHttpClient;
     private GitHubClient gitHubClient;
     private User user;
 
@@ -94,9 +106,40 @@ public class GitHubApiService extends Service {
     }
 
     public void feeds() {
+        gitHubClient.feeds()
+                .map(feedsResponse -> feedsResponse.currentUserUrl)
+                .flatMap(url -> Observable
+                        .create((Observable.OnSubscribe<Response>) subscriber -> {
+                            Request request = new Request.Builder().url(url).build();
+                            try {
+                                Response response = okHttpClient.newCall(request).execute();
+                                subscriber.onNext(response);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                subscriber.onError(e);
+                            }
+                            subscriber.onCompleted();
+                        }))
+                .map(response -> {
+                    String bodyText = null;
+                    try {
+                        bodyText = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return bodyText;
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Log.d("mimic", "kore -> " + s);
+                    }
+                });
     }
 
     private GitHubClient createGitHubApiClient(@Nullable String authorization) {
+        okHttpClient = new OkHttpClient();
+
         return new RestAdapter.Builder()
                 .setRequestInterceptor(request -> {
                     request.addHeader(Header.ACCEPT, "application/json");
@@ -104,6 +147,7 @@ public class GitHubApiService extends Service {
                         request.addHeader(Header.AUTHORIZATION, authorization);
                     }
                 })
+                .setClient(new OkClient(okHttpClient))
                 .setEndpoint(GITHUB_BASE_URL)
                 .setLogLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)
                 .build()
