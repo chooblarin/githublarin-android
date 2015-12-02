@@ -14,7 +14,6 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.service.GitHubApiService;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -39,7 +38,6 @@ public class StartupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup);
-
         Context context = getApplicationContext();
         Intent intent = new Intent(context, GitHubApiService.class);
         context.bindService(intent, connection, BIND_AUTO_CREATE);

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -11,7 +12,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -22,15 +22,13 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.databinding.ActivityMainBinding;
 import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.fragment.GistFragment;
 import com.chooblarin.githublarin.ui.fragment.StarredFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -52,23 +50,11 @@ public class MainActivity extends AppCompatActivity
     private GitHubApiService service;
     private CompositeSubscription subscriptions;
 
-    @InjectView(R.id.toolbar_main)
-    Toolbar toolbar;
-
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-
-    @InjectView(R.id.navigation_view)
-    NavigationView navigationView;
-
-    @InjectView(R.id.image_avatar_drawer)
     SimpleDraweeView avatarImage;
-
-    @InjectView(R.id.text_user_name_drawer)
     TextView userNameText;
-
-    @InjectView(R.id.text_user_login_drawer)
     TextView userLoginText;
+
+    private ActivityMainBinding binding;
 
     private SearchView searchView;
 
@@ -77,17 +63,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
-        setSupportActionBar(toolbar);
-        setupToolbar();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        setupToolbar(binding.toolbarMain);
 
         user = getIntent().getParcelableExtra(EXTRA_USER);
         if (null != user) {
-            bindUser(user);
+            // bindUser(user); todo http://stackoverflow.com/questions/32246360/how-to-get-view-from-drawer-header-layout-with-binding-in-activity
         }
 
         setupDrawerContent();
+        setupNavigationView();
     }
 
     @Override
@@ -108,7 +94,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.reset(this);
+        binding.unbind();
     }
 
     @Override
@@ -125,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                binding.drawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -133,8 +119,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(navigationView)) {
-            drawerLayout.closeDrawers();
+        if (binding.drawerLayout.isDrawerOpen(binding.navigationView)) {
+            binding.drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
         }
@@ -159,15 +145,14 @@ public class MainActivity extends AppCompatActivity
         service = null;
     }
 
-
-    @OnClick({R.id.container_nav_header})
     public void showMyPage() {
-        drawerLayout.closeDrawers();
+        binding.drawerLayout.closeDrawers();
         Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
         startActivity(intent);
     }
 
-    private void setupToolbar() {
+    private void setupToolbar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
 
@@ -175,10 +160,17 @@ public class MainActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    private void setupNavigationView() {
+
+        avatarImage = (SimpleDraweeView) findViewById(R.id.image_avatar_drawer);
+        userNameText = (TextView) findViewById(R.id.text_user_name_drawer);
+        userLoginText = (TextView) findViewById(R.id.text_user_login_drawer);
+    }
+
     private void setupDrawerContent() {
-        navigationView.setNavigationItemSelectedListener(menuItem -> {
+        binding.navigationView.setNavigationItemSelectedListener(menuItem -> {
             menuItem.setChecked(true);
-            drawerLayout.closeDrawers();
+            binding.drawerLayout.closeDrawers();
             showContent(menuItem.getItemId());
             return true;
         });
@@ -208,7 +200,7 @@ public class MainActivity extends AppCompatActivity
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
                     this.user = _user;
-                    bindUser(_user);
+                    // bindUser(_user); todo
                 }, throwable -> {
                     throwable.printStackTrace();
                 });
@@ -229,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnFocusChangeListener((_view, hasFocus) -> {
             if (!hasFocus) {
-                toolbar.collapseActionView();
+                binding.toolbarMain.collapseActionView();
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
