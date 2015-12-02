@@ -58,7 +58,7 @@ dependencies {
     compile "com.android.support:design:${supportPackageVersion}"
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'io.reactivex:rxjava:1.0.12'
-    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.google.code.gson:gson:2.4'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.facebook.fresco:fresco:0.5.1+'
     compile 'com.facebook.conceal:conceal:1.0.0@aar'
