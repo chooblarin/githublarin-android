@@ -1,6 +1,5 @@
 package com.chooblarin.githublarin.service;
 
-import android.app.DownloadManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,26 +13,26 @@ import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.client.GitHubClient;
 import com.chooblarin.githublarin.api.http.Header;
-import com.chooblarin.githublarin.api.response.FeedsResponse;
 import com.chooblarin.githublarin.api.response.SearchResponse;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import java.io.IOException;
 import java.util.List;
 
-import retrofit.RestAdapter;
-import retrofit.RestAdapter.LogLevel;
-import retrofit.client.OkClient;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class GitHubApiService extends Service {
 
@@ -139,17 +138,28 @@ public class GitHubApiService extends Service {
 
     private GitHubClient createGitHubApiClient(@Nullable String authorization) {
         okHttpClient = new OkHttpClient();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(BuildConfig.DEBUG ?
+                HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+        okHttpClient.interceptors().add(interceptor);
+        okHttpClient.interceptors().add(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                Request.Builder builder = request.newBuilder();
+                builder.addHeader(Header.ACCEPT, "application/json");
+                if (null != authorization) {
+                    builder.addHeader(Header.AUTHORIZATION, authorization);
+                }
+                return chain.proceed(builder.build());
+            }
+        });
 
-        return new RestAdapter.Builder()
-                .setRequestInterceptor(request -> {
-                    request.addHeader(Header.ACCEPT, "application/json");
-                    if (null != authorization) {
-                        request.addHeader(Header.AUTHORIZATION, authorization);
-                    }
-                })
-                .setClient(new OkClient(okHttpClient))
-                .setEndpoint(GITHUB_BASE_URL)
-                .setLogLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)
+        return new Retrofit.Builder()
+                .client(okHttpClient)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .baseUrl(GITHUB_BASE_URL)
                 .build()
                 .create(GitHubClient.class);
     }
