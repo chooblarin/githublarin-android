@@ -136,9 +136,7 @@ public class MyPageActivity extends AppCompatActivity
                     joinedDateText.setText(_user.createdAt);
                     followingCountText.setText(String.valueOf(_user.following));
                     followersCountText.setText(String.valueOf(_user.followers));
-                }, throwable -> {
-                    throwable.printStackTrace();
-                });
+                }, throwable -> throwable.printStackTrace());
 
         loadingProgress.setVisibility(View.VISIBLE);
 

@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
@@ -66,14 +67,13 @@ public class MainActivity extends AppCompatActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         setupToolbar(binding.toolbarMain);
+        setupDrawerContent();
+        setupNavigationView(binding.navigationView);
 
         user = getIntent().getParcelableExtra(EXTRA_USER);
         if (null != user) {
-            // bindUser(user); todo http://stackoverflow.com/questions/32246360/how-to-get-view-from-drawer-header-layout-with-binding-in-activity
+            bindUser(user);
         }
-
-        setupDrawerContent();
-        setupNavigationView();
     }
 
     @Override
@@ -160,11 +160,11 @@ public class MainActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setupNavigationView() {
-
-        avatarImage = (SimpleDraweeView) findViewById(R.id.image_avatar_drawer);
-        userNameText = (TextView) findViewById(R.id.text_user_name_drawer);
-        userLoginText = (TextView) findViewById(R.id.text_user_login_drawer);
+    private void setupNavigationView(NavigationView navigationView) {
+        View headerView = navigationView.inflateHeaderView(R.layout.nav_header);
+        avatarImage = (SimpleDraweeView) headerView.findViewById(R.id.image_avatar_drawer);
+        userNameText = (TextView) headerView.findViewById(R.id.text_user_name_drawer);
+        userLoginText = (TextView) headerView.findViewById(R.id.text_user_login_drawer);
     }
 
     private void setupDrawerContent() {
@@ -199,8 +199,8 @@ public class MainActivity extends AppCompatActivity
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
-                    this.user = _user;
-                    // bindUser(_user); todo
+                    MainActivity.this.user = _user;
+                    bindUser(_user);
                 }, throwable -> {
                     throwable.printStackTrace();
                 });
