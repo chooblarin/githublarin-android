@@ -109,6 +109,5 @@ crashlytics.properties
 crashlytics-build.properties
 
 
-access_token.xml
 gradle.properties
 *.keystore
