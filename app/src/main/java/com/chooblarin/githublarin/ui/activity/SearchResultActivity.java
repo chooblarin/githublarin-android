@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBar;
@@ -13,14 +14,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.databinding.ActivitySearchResultBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -42,12 +42,7 @@ public class SearchResultActivity extends AppCompatActivity
     private CompositeSubscription subscriptions;
     private String searchKey;
     private RepositoryAdapter repositoryAdapter;
-
-    @InjectView(R.id.recyclerview_search_result)
-    RecyclerView recyclerView;
-
-    @InjectView(R.id.progress_search_result)
-    ProgressBar loadingProgress;
+    ActivitySearchResultBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +50,10 @@ public class SearchResultActivity extends AppCompatActivity
         Intent intent = getIntent();
         searchKey = intent.getStringExtra(EXTRA_SEARCH_KEY);
 
-        setContentView(R.layout.activity_search_result);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search_result);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_search_result);
-        setSupportActionBar(toolbar);
-        setupToolbar();
-
-        ButterKnife.inject(this);
-
-        repositoryAdapter = new RepositoryAdapter(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(repositoryAdapter);
+        setupToolbar(binding.toolbarSearchResult);
+        setupSearchResultListView(binding.recyclerviewSearchResult);
     }
 
     @Override
@@ -123,23 +111,24 @@ public class SearchResultActivity extends AppCompatActivity
             return;
         }
 
-        loadingProgress.setVisibility(View.VISIBLE);
+        binding.progressSearchResult.setVisibility(View.VISIBLE);
 
         Subscription subscription = service.searchRepository(searchKey, true)
                 .map(searchResponse -> searchResponse.items)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
-                    loadingProgress.setVisibility(View.GONE);
+                    binding.progressSearchResult.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);
                 }, throwable -> {
-                    loadingProgress.setVisibility(View.GONE);
+                    binding.progressSearchResult.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
         subscriptions.add(subscription);
     }
 
-    private void setupToolbar() {
+    private void setupToolbar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
 
@@ -147,5 +136,11 @@ public class SearchResultActivity extends AppCompatActivity
             actionBar.setTitle(searchKey);
         }
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setupSearchResultListView(RecyclerView recyclerView) {
+        repositoryAdapter = new RepositoryAdapter(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(repositoryAdapter);
     }
 }
