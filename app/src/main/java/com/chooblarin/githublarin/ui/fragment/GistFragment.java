@@ -9,7 +9,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,17 +19,16 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentGistBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.GistAdapter;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
-public class GistFragment extends Fragment implements ServiceConnection {
+public class GistFragment extends RxFragment implements ServiceConnection {
 
     private GitHubApiService service;
     private GistAdapter gistAdapter;
-    private CompositeSubscription subscriptions;
 
     FragmentGistBinding binding;
 
@@ -57,7 +55,6 @@ public class GistFragment extends Fragment implements ServiceConnection {
     @Override
     public void onStart() {
         super.onStart();
-        subscriptions = new CompositeSubscription();
         Context context = getActivity().getApplicationContext();
         Intent intent = new Intent(context, GitHubApiService.class);
         context.bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -66,7 +63,6 @@ public class GistFragment extends Fragment implements ServiceConnection {
     @Override
     public void onStop() {
         super.onStop();
-        subscriptions.unsubscribe();
         getActivity().getApplicationContext().unbindService(this);
     }
 
@@ -90,7 +86,8 @@ public class GistFragment extends Fragment implements ServiceConnection {
     private void setup() {
         binding.progressLoadingGist.setVisibility(View.VISIBLE);
 
-        Subscription gists = service.gists()
+        service.gists()
+                .compose(bindUntilEvent(FragmentEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_gists -> {
@@ -100,7 +97,6 @@ public class GistFragment extends Fragment implements ServiceConnection {
                     binding.progressLoadingGist.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
-        subscriptions.add(gists);
     }
 
     private void setupGistListView(RecyclerView recyclerView) {

@@ -6,18 +6,19 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.service.GitHubApiService;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class StartupActivity extends AppCompatActivity {
+public class StartupActivity extends RxAppCompatActivity {
 
     final private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -64,6 +65,7 @@ public class StartupActivity extends AppCompatActivity {
 
     private void login(String username, String password) {
         service.login(username, password)
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {

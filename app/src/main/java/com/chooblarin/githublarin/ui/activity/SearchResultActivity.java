@@ -8,7 +8,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,14 +18,14 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.ActivitySearchResultBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SearchResultActivity extends AppCompatActivity
+public class SearchResultActivity extends RxAppCompatActivity
         implements ServiceConnection {
 
     private static final String EXTRA_SEARCH_KEY = "extra_search_key";
@@ -38,7 +37,6 @@ public class SearchResultActivity extends AppCompatActivity
     }
 
     private GitHubApiService service;
-    private CompositeSubscription subscriptions;
     private String searchKey;
     private RepositoryAdapter repositoryAdapter;
     ActivitySearchResultBinding binding;
@@ -58,8 +56,6 @@ public class SearchResultActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        subscriptions = new CompositeSubscription();
-
         Context context = getApplicationContext();
         Intent intent = new Intent(context, GitHubApiService.class);
         context.bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -68,7 +64,6 @@ public class SearchResultActivity extends AppCompatActivity
     @Override
     public void onStop() {
         super.onStop();
-        subscriptions.unsubscribe();
         getApplicationContext().unbindService(this);
     }
 
@@ -112,8 +107,9 @@ public class SearchResultActivity extends AppCompatActivity
 
         binding.progressSearchResult.setVisibility(View.VISIBLE);
 
-        Subscription subscription = service.searchRepository(searchKey, true)
+        service.searchRepository(searchKey, true)
                 .map(searchResponse -> searchResponse.items)
+                .compose(bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
@@ -123,7 +119,6 @@ public class SearchResultActivity extends AppCompatActivity
                     binding.progressSearchResult.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
-        subscriptions.add(subscription);
     }
 
     private void setupToolbar(Toolbar toolbar) {

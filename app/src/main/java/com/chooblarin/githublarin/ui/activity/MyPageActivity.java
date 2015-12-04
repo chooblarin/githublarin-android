@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,14 +21,14 @@ import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MyPageActivity extends AppCompatActivity
+public class MyPageActivity extends RxAppCompatActivity
         implements ServiceConnection {
 
     private GitHubApiService service;
@@ -38,7 +37,6 @@ public class MyPageActivity extends AppCompatActivity
     SimpleDraweeView avatarImage;
 
     ActivityMyPageBinding binding;
-    CompositeSubscription subscriptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,6 @@ public class MyPageActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        subscriptions = new CompositeSubscription();
         Intent intent = new Intent(getApplicationContext(), GitHubApiService.class);
         getApplicationContext().bindService(intent, this, BIND_AUTO_CREATE);
     }
@@ -60,7 +57,6 @@ public class MyPageActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        subscriptions.unsubscribe();
         getApplicationContext().unbindService(this);
     }
 
@@ -89,7 +85,8 @@ public class MyPageActivity extends AppCompatActivity
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
 
-        Subscription user = service.user()
+        service.user()
+                .compose(bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
@@ -98,7 +95,8 @@ public class MyPageActivity extends AppCompatActivity
 
         binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
 
-        Subscription starred = service.repositories()
+        service.repositories()
+                .compose(bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
@@ -108,9 +106,6 @@ public class MyPageActivity extends AppCompatActivity
                     binding.progressLoadingMyRepo.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
-
-        subscriptions.add(user);
-        subscriptions.add(starred);
     }
 
     @Override

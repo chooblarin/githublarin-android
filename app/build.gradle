@@ -61,6 +61,9 @@ dependencies {
     compile "com.android.support:design:${supportPackageVersion}"
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.1.0'
+    compile 'com.trello:rxlifecycle:0.3.1'
+    compile 'com.trello:rxlifecycle-components:0.3.1'
+    compile 'com.artemzin.rxjava:proguard-rules:1.0.16.2'
     compile 'com.google.code.gson:gson:2.4'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.facebook.fresco:fresco:0.5.1+'

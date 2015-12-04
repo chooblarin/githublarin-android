@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -16,13 +15,13 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.databinding.ActivityLoginBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
-public class LoginActivity extends AppCompatActivity implements ServiceConnection {
+public class LoginActivity extends RxAppCompatActivity implements ServiceConnection {
 
     public static Intent createIntent(Context context) {
         return new Intent(context, LoginActivity.class);
@@ -30,7 +29,6 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
 
     ActivityLoginBinding binding;
     private GitHubApiService service;
-    private CompositeSubscription subscriptions;
     public final View.OnClickListener onLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -46,7 +44,6 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.textLoginButton.setOnClickListener(onLoginClickListener);
 
-        subscriptions = new CompositeSubscription();
         Context context = getApplicationContext();
         Intent intent = new Intent(context, GitHubApiService.class);
         context.bindService(intent, this, BIND_AUTO_CREATE);
@@ -56,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
     protected void onDestroy() {
         super.onDestroy();
         binding.unbind();
-        subscriptions.unsubscribe();
         getApplicationContext().unbindService(this);
     }
 
@@ -82,7 +78,8 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
     }
 
     private void login(String username, String password) {
-        Subscription subscription = service.login(username, password)
+        service.login(username, password)
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
@@ -96,6 +93,5 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
                     throwable.printStackTrace();
                     Toast.makeText(getApplicationContext(), "ログイン失敗", Toast.LENGTH_SHORT).show();
                 });
-        subscriptions.add(subscription);
     }
 }

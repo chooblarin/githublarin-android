@@ -9,7 +9,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,18 +19,17 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentStarredBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
-public class StarredFragment extends Fragment
+public class StarredFragment extends RxFragment
         implements ServiceConnection {
 
     private GitHubApiService service;
     private RepositoryAdapter repositoryAdapter;
-    private CompositeSubscription subscriptions;
 
     FragmentStarredBinding binding;
 
@@ -58,7 +56,6 @@ public class StarredFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        subscriptions = new CompositeSubscription();
         Context context = getActivity().getApplicationContext();
         Intent intent = new Intent(context, GitHubApiService.class);
         context.bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -67,7 +64,6 @@ public class StarredFragment extends Fragment
     @Override
     public void onStop() {
         super.onStop();
-        subscriptions.unsubscribe();
         getActivity().getApplicationContext().unbindService(this);
     }
 
@@ -91,7 +87,8 @@ public class StarredFragment extends Fragment
     private void setup() {
         binding.progressLoadingStarred.setVisibility(View.VISIBLE);
 
-        Subscription repositories = service.starredRepositories()
+        service.starredRepositories()
+                .compose(bindUntilEvent(FragmentEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
@@ -101,7 +98,6 @@ public class StarredFragment extends Fragment
                     binding.progressLoadingStarred.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
-        subscriptions.add(repositories);
     }
 
     private void setupStarredList(RecyclerView recyclerView) {
