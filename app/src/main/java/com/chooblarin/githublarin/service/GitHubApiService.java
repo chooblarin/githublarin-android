@@ -33,6 +33,7 @@ import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class GitHubApiService extends Service {
 
@@ -128,6 +129,7 @@ public class GitHubApiService extends Service {
                     }
                     return bodyText;
                 })
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
