@@ -1,63 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    <data>
+
+        <variable
+            name="user"
+            type="com.chooblarin.githublarin.model.User" />
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="208dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/colorPrimary"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:layout_height="208dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <include
-                layout="@layout/layout_collapsing_my_page"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true" />
+                android:background="?attr/colorPrimary"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginStart="48dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <include
-                layout="@layout/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
+                <RelativeLayout
+                    android:id="@+id/container_collapsing_my_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="196dp"
+                    android:background="@color/cbr_color_light_gray"
+                    android:fitsSystemWindows="true"
+                    android:padding="16dp">
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/image_avatar_my_page"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="16dp"
+                        fresco:placeholderImage="@drawable/shape_circle_001" />
 
-    </android.support.design.widget.AppBarLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/image_avatar_my_page"
+                        android:layout_toRightOf="@+id/image_avatar_my_page"
+                        android:orientation="horizontal">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                        <LinearLayout
+                            android:id="@+id/container_user_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:orientation="vertical"
+                            android:padding="4dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="208dp">
+                            <TextView
+                                android:id="@+id/text_user_name_my_page"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="start"
+                                android:text="@{user.name}"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="16sp"
+                                tools:text="Sou Hatake" />
 
-        <ProgressBar
-            android:id="@+id/progress_loading_my_repo"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+                            <TextView
+                                android:id="@+id/text_location_my_page"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="start"
+                                android:text="@{user.location}"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="12sp"
+                                tools:text="Japan, Tokyo" />
 
-    </RelativeLayout>
+                            <TextView
+                                android:id="@+id/text_joined_date_my_page"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:gravity="start"
+                                android:text="@{user.createdAt}"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="12sp"
+                                tools:text="Joined on 29, Dec 2012" />
 
-</android.support.design.widget.CoordinatorLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/container_following"
+                            android:layout_width="96dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/container_user_info"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_following_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="@{String.valueOf(user.following)}"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="24sp"
+                                tools:text="100" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="Following"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/container_followers"
+                            android:layout_width="96dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/container_user_info"
+                            android:layout_toEndOf="@+id/container_following"
+                            android:layout_toRightOf="@+id/container_following"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_followers_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="@{String.valueOf(user.followers)}"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="24sp"
+                                tools:text="30" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="Followers"
+                                android:textColor="@color/cbr_color_100"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="208dp">
+
+            <ProgressBar
+                android:id="@+id/progress_loading_my_repo"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

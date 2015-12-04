@@ -165,6 +165,13 @@ public class MainActivity extends AppCompatActivity
         avatarImage = (SimpleDraweeView) headerView.findViewById(R.id.image_avatar_drawer);
         userNameText = (TextView) headerView.findViewById(R.id.text_user_name_drawer);
         userLoginText = (TextView) headerView.findViewById(R.id.text_user_login_drawer);
+
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMyPage();
+            }
+        });
     }
 
     private void setupDrawerContent() {

@@ -4,10 +4,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,16 +15,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.databinding.ActivityMyPageBinding;
+import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -37,51 +35,18 @@ public class MyPageActivity extends AppCompatActivity
     private GitHubApiService service;
     private RepositoryAdapter repositoryAdapter;
 
-    @InjectView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @InjectView(R.id.image_avatar_my_page)
     SimpleDraweeView avatarImage;
 
-    @InjectView(R.id.text_user_name_my_page)
-    TextView userNameText;
-
-    @InjectView(R.id.text_location_my_page)
-    TextView locationText;
-
-    @InjectView(R.id.text_joined_date_my_page)
-    TextView joinedDateText;
-
-    @InjectView(R.id.text_following_count)
-    TextView followingCountText;
-
-    @InjectView(R.id.text_followers_count)
-    TextView followersCountText;
-
-    @InjectView(R.id.recyclerview)
-    RecyclerView recyclerView;
-
-    @InjectView(R.id.progress_loading_my_repo)
-    ProgressBar loadingProgress;
-
+    ActivityMyPageBinding binding;
     CompositeSubscription subscriptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_page);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setupToolbar();
-
-        ButterKnife.inject(this);
-
-        collapsingToolbarLayout.setTitle("chooblarin");
-
-        repositoryAdapter = new RepositoryAdapter(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(repositoryAdapter);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_my_page);
+        setupToolbar(binding.toolbar);
+        setupCollapsingToolbar(binding.containerCollapsingMyPage);
+        setupRepositoryListView(binding.recyclerview);
     }
 
     @Override
@@ -102,7 +67,7 @@ public class MyPageActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.reset(this);
+        binding.unbind();
     }
 
     @Override
@@ -128,26 +93,19 @@ public class MyPageActivity extends AppCompatActivity
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
-                    if (null != _user.avatarUrl) {
-                        avatarImage.setImageURI(Uri.parse(_user.avatarUrl));
-                    }
-                    userNameText.setText(_user.name);
-                    locationText.setText(_user.location);
-                    joinedDateText.setText(_user.createdAt);
-                    followingCountText.setText(String.valueOf(_user.following));
-                    followersCountText.setText(String.valueOf(_user.followers));
+                    bindUser(_user);
                 }, throwable -> throwable.printStackTrace());
 
-        loadingProgress.setVisibility(View.VISIBLE);
+        binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
 
         Subscription starred = service.repositories()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
-                    loadingProgress.setVisibility(View.GONE);
+                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);
                 }, throwable -> {
-                    loadingProgress.setVisibility(View.GONE);
+                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
 
@@ -160,10 +118,29 @@ public class MyPageActivity extends AppCompatActivity
         service = null;
     }
 
-    private void setupToolbar() {
+    private void setupToolbar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setupCollapsingToolbar(View layout) {
+        avatarImage = (SimpleDraweeView) layout.findViewById(R.id.image_avatar_my_page);
+        binding.collapsingToolbar.setTitle("chooblarin");
+    }
+
+    private void setupRepositoryListView(RecyclerView recyclerView) {
+        repositoryAdapter = new RepositoryAdapter(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(repositoryAdapter);
+    }
+
+    private void bindUser(User user) {
+        if (null != user.avatarUrl) {
+            avatarImage.setImageURI(Uri.parse(user.avatarUrl));
+        }
+        binding.setUser(user);
     }
 }
