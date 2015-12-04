@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -14,14 +15,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.databinding.FragmentStarredBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -34,11 +33,7 @@ public class StarredFragment extends Fragment
     private RepositoryAdapter repositoryAdapter;
     private CompositeSubscription subscriptions;
 
-    @InjectView(R.id.recyclerview_starred)
-    RecyclerView recyclerView;
-
-    @InjectView(R.id.progress_loading_starred)
-    ProgressBar loadingProgress;
+    FragmentStarredBinding binding;
 
     @Override
     public void onAttach(Activity activity) {
@@ -50,16 +45,14 @@ public class StarredFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_starred, container, false);
-        ButterKnife.inject(this, rootView);
-        return rootView;
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_starred, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(repositoryAdapter);
+        setupStarredList(binding.recyclerviewStarred);
     }
 
     @Override
@@ -90,17 +83,23 @@ public class StarredFragment extends Fragment
     }
 
     private void setup() {
-        loadingProgress.setVisibility(View.VISIBLE);
+        binding.progressLoadingStarred.setVisibility(View.VISIBLE);
 
         Subscription repositories = service.starredRepositories()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
-                    loadingProgress.setVisibility(View.GONE);
+                    binding.progressLoadingStarred.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);
                 }, throwable -> {
+                    binding.progressLoadingStarred.setVisibility(View.GONE);
                     throwable.printStackTrace();
                 });
         subscriptions.add(repositories);
+    }
+
+    private void setupStarredList(RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(repositoryAdapter);
     }
 }
