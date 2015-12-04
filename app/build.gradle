@@ -59,7 +59,7 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportPackageVersion}"
     compile "com.android.support:recyclerview-v7:${supportPackageVersion}"
     compile "com.android.support:design:${supportPackageVersion}"
-    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
