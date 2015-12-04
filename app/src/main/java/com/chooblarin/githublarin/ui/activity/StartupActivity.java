@@ -28,7 +28,7 @@ public class StartupActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            service = null;
         }
     };
 

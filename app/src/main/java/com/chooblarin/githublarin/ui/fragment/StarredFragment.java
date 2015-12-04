@@ -72,6 +72,12 @@ public class StarredFragment extends Fragment
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        binding.unbind();
+    }
+
+    @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
         setup();

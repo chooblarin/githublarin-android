@@ -20,7 +20,6 @@ import com.chooblarin.githublarin.databinding.ActivitySearchResultBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 
-import butterknife.ButterKnife;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -76,7 +75,7 @@ public class SearchResultActivity extends AppCompatActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ButterKnife.reset(this);
+        binding.unbind();
     }
 
     @Override

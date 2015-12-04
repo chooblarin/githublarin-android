@@ -33,19 +33,6 @@
 #-keep class com.google.gson.stream.** { *; }
 -keep class com.google.gson.** { *; }
 
-# ButterKnife
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewInjector { *; }
-
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
 -dontwarn rx.**
 
 -dontwarn retrofit.**
