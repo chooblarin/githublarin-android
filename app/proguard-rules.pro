@@ -15,6 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# databinding
+-dontwarn android.databinding.**
 
 # retrolambda
 -dontwarn java.lang.invoke.*
