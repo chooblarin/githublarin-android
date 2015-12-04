@@ -56,6 +56,9 @@ public class StartupActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
             login(username, password);
+        } else {
+            startActivity(LoginActivity.createIntent(this));
+            finish();
         }
     }
 

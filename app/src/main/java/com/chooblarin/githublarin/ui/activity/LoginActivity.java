@@ -4,20 +4,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.Toast;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
+import com.chooblarin.githublarin.databinding.ActivityLoginBinding;
 import com.chooblarin.githublarin.service.GitHubApiService;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -29,20 +28,23 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
         return new Intent(context, LoginActivity.class);
     }
 
-    @InjectView(R.id.edit_text_username)
-    EditText userNameText;
-
-    @InjectView(R.id.edit_text_password)
-    EditText passwordText;
-
+    ActivityLoginBinding binding;
     private GitHubApiService service;
     private CompositeSubscription subscriptions;
+    public final View.OnClickListener onLoginClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final String username = binding.editTextUsername.getText().toString();
+            final String password = binding.editTextPassword.getText().toString();
+            login(username, password);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.inject(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        binding.textLoginButton.setOnClickListener(onLoginClickListener);
 
         subscriptions = new CompositeSubscription();
         Context context = getApplicationContext();
@@ -53,16 +55,9 @@ public class LoginActivity extends AppCompatActivity implements ServiceConnectio
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.reset(this);
+        binding.unbind();
         subscriptions.unsubscribe();
         getApplicationContext().unbindService(this);
-    }
-
-    @OnClick({R.id.text_login_button})
-    protected void onLoginClick() {
-        String username = userNameText.getText().toString();
-        String password = passwordText.getText().toString();
-        login(username, password);
     }
 
     @Override

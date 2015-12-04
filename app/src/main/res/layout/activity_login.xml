@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:id="@+id/container_text_field"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/space_xlarge"
-        android:layout_marginRight="@dimen/space_xlarge"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:padding="@dimen/space_large">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_layout_username"
+        <LinearLayout
+            android:id="@+id/container_text_field"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/space_xlarge"
+            android:layout_marginRight="@dimen/space_xlarge"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/space_large">
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/edit_text_username"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_username"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_medium"
-                android:gravity="center_vertical"
-                android:hint="username"
-                android:inputType="textAutoComplete"
-                android:maxLines="1"
-                android:textSize="@dimen/text_size_medium" />
+                android:layout_height="wrap_content">
 
-        </android.support.design.widget.TextInputLayout>
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edit_text_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_medium"
+                    android:gravity="center_vertical"
+                    android:hint="username"
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:textSize="@dimen/text_size_medium" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/space_large" />
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_layout_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/edit_text_password"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_medium"
-                android:gravity="center_vertical"
-                android:hint="password"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textSize="@dimen/text_size_medium" />
+                android:layout_height="@dimen/space_large" />
 
-        </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/text_input_layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </LinearLayout>
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edit_text_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_medium"
+                    android:gravity="center_vertical"
+                    android:hint="password"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textSize="@dimen/text_size_medium" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/text_login_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_medium"
-        android:layout_below="@+id/container_text_field"
-        android:layout_marginLeft="@dimen/space_xlarge"
-        android:layout_marginRight="@dimen/space_xlarge"
-        android:gravity="center"
-        android:text="Login"
-        android:textSize="@dimen/text_size_medium" />
+            </android.support.design.widget.TextInputLayout>
 
-</RelativeLayout>
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/text_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_medium"
+            android:layout_below="@+id/container_text_field"
+            android:layout_marginLeft="@dimen/space_xlarge"
+            android:layout_marginRight="@dimen/space_xlarge"
+            android:gravity="center"
+            android:text="Login"
+            android:textSize="@dimen/text_size_medium" />
+    </RelativeLayout>
+</layout>
