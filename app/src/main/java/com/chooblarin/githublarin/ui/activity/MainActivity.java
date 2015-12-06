@@ -25,6 +25,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.ActivityMainBinding;
 import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
+import com.chooblarin.githublarin.ui.fragment.EventFragment;
 import com.chooblarin.githublarin.ui.fragment.GistFragment;
 import com.chooblarin.githublarin.ui.fragment.StarredFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -67,6 +68,7 @@ public class MainActivity extends RxAppCompatActivity
         setupToolbar(binding.toolbarMain);
         setupDrawerContent();
         setupNavigationView(binding.navigationView);
+        showContent(R.id.nav_item_event);
 
         user = getIntent().getParcelableExtra(EXTRA_USER);
         if (null != user) {
@@ -133,7 +135,6 @@ public class MainActivity extends RxAppCompatActivity
         if (null == user) {
             setupUserData();
         }
-        service.feeds();
     }
 
     @Override
@@ -181,6 +182,10 @@ public class MainActivity extends RxAppCompatActivity
 
     private void showContent(int menuId) {
         switch (menuId) {
+            case R.id.nav_item_event:
+                showFragment(new EventFragment(), false);
+                break;
+
             case R.id.nav_item_gist:
                 showFragment(new GistFragment(), false);
                 break;
@@ -199,7 +204,7 @@ public class MainActivity extends RxAppCompatActivity
 
     private void setupUserData() {
         service.user()
-                .compose(bindUntilEvent(ActivityEvent.STOP))
+                .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
