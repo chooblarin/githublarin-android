@@ -45,6 +45,7 @@ public class EventFragment extends RxFragment implements OnItemClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         eventAdapter = new EventAdapter(getActivity());
+        eventAdapter.setOnItemClickListener(this);
 
         Context context = getActivity().getApplicationContext();
         String username = Credential.username(context);
@@ -115,7 +116,7 @@ public class EventFragment extends RxFragment implements OnItemClickListener {
 
     @Override
     public void onItemClick(View view, int position) {
-
+        // todo
     }
 
     private void setupEventListView(RecyclerView recyclerView) {
