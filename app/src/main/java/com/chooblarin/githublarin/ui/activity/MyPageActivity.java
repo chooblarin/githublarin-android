@@ -17,12 +17,15 @@ import android.view.View;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.ActivityMyPageBinding;
+import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -86,7 +89,7 @@ public class MyPageActivity extends RxAppCompatActivity
         service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
 
         service.user()
-                .compose(bindUntilEvent(ActivityEvent.STOP))
+                .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
@@ -96,7 +99,7 @@ public class MyPageActivity extends RxAppCompatActivity
         binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
 
         service.repositories()
-                .compose(bindUntilEvent(ActivityEvent.STOP))
+                .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {

@@ -17,10 +17,13 @@ import android.view.ViewGroup;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentStarredBinding;
+import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.components.support.RxFragment;
+
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -88,7 +91,7 @@ public class StarredFragment extends RxFragment
         binding.progressLoadingStarred.setVisibility(View.VISIBLE);
 
         service.starredRepositories()
-                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(this.<List<Repository>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {

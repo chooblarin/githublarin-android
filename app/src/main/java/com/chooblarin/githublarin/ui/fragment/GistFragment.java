@@ -17,10 +17,13 @@ import android.view.ViewGroup;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentGistBinding;
+import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.GistAdapter;
 import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.components.support.RxFragment;
+
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -87,7 +90,7 @@ public class GistFragment extends RxFragment implements ServiceConnection {
         binding.progressLoadingGist.setVisibility(View.VISIBLE);
 
         service.gists()
-                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(this.<List<Gist>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_gists -> {

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.databinding.ActivityLoginBinding;
+import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.service.GitHubApiService;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
@@ -79,7 +80,7 @@ public class LoginActivity extends RxAppCompatActivity implements ServiceConnect
 
     private void login(String username, String password) {
         service.login(username, password)
-                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .compose(this.<User>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
