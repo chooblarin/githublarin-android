@@ -7,16 +7,17 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.client.GitHubClient;
 import com.chooblarin.githublarin.api.http.Header;
 import com.chooblarin.githublarin.api.response.SearchResponse;
+import com.chooblarin.githublarin.model.Entry;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
+import com.chooblarin.githublarin.model.FeedParser;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.Interceptor;
@@ -32,8 +33,6 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class GitHubApiService extends Service {
 
@@ -105,21 +104,19 @@ public class GitHubApiService extends Service {
         this.user = user;
     }
 
-    public void feeds() {
-        gitHubClient.feeds()
+    public Observable<List<Entry>> feeds() {
+        return gitHubClient.feeds()
                 .map(feedsResponse -> feedsResponse.currentUserUrl)
-                .flatMap(url -> Observable
-                        .create((Observable.OnSubscribe<Response>) subscriber -> {
-                            Request request = new Request.Builder().url(url).build();
-                            try {
-                                Response response = okHttpClient.newCall(request).execute();
-                                subscriber.onNext(response);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                subscriber.onError(e);
-                            }
-                            subscriber.onCompleted();
-                        }))
+                .flatMap(url -> Observable.create((Observable.OnSubscribe<Response>) subscriber -> {
+                    Request request = new Request.Builder().url(url).build();
+                    try {
+                        Response response = okHttpClient.newCall(request).execute();
+                        subscriber.onNext(response);
+                    } catch (IOException e) {
+                        subscriber.onError(e);
+                    }
+                    subscriber.onCompleted();
+                }))
                 .map(response -> {
                     String bodyText = null;
                     try {
@@ -129,13 +126,7 @@ public class GitHubApiService extends Service {
                     }
                     return bodyText;
                 })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        Log.d("mimic", "kore -> " + s);
-                    }
-                });
+                .map(FeedParser::parseString);
     }
 
     private GitHubClient createGitHubApiClient(@Nullable String authorization) {
