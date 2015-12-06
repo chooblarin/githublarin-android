@@ -59,7 +59,7 @@ public abstract class ArrayRecyclerAdapter<T, VH extends RecyclerView.ViewHolder
         this.onItemClickListener = onItemClickListener;
     }
 
-    protected void dispathItemClickEvent(View view, int positon) {
+    protected void dispatchItemClickEvent(View view, int positon) {
         onItemClickListener.onItemClick(view, positon);
     }
 }

@@ -24,7 +24,7 @@ public class EventAdapter extends ArrayRecyclerAdapter<Entry, EventAdapter.ViewH
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                dispathItemClickEvent(v, position);
+                dispatchItemClickEvent(v, position);
             }
         });
         return holder;
