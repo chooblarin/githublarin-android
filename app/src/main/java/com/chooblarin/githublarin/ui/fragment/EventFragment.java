@@ -75,7 +75,8 @@ public class EventFragment extends RxFragment implements OnItemClickListener {
                 .flatMap(url -> Observable.create((Observable.OnSubscribe<Response>) subscriber -> {
                     Request request = new Request.Builder().url(url).build();
                     try {
-                        Response response = new OkHttpClient().newCall(request).execute(); // todo
+                        // todo : A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
+                        Response response = new OkHttpClient().newCall(request).execute();
                         subscriber.onNext(response);
                     } catch (IOException e) {
                         subscriber.onError(e);
