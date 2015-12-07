@@ -1,6 +1,7 @@
 package com.chooblarin.githublarin.ui.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.model.Entry;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 public class EventAdapter extends ArrayRecyclerAdapter<Entry, EventAdapter.ViewHolder> {
 
@@ -33,18 +35,20 @@ public class EventAdapter extends ArrayRecyclerAdapter<Entry, EventAdapter.ViewH
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Entry entry = getItem(position);
-        holder.textView.setText(entry.title);
+        holder.thumbnail.setImageURI(Uri.parse(entry.thumbnail));
+        holder.title.setText(entry.title);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         static final int LAYOUT_ID = R.layout.list_item_event;
-
-        TextView textView;
+        SimpleDraweeView thumbnail;
+        TextView title;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.text_title);
+            thumbnail = (SimpleDraweeView) itemView.findViewById(R.id.image_thumbnail);
+            title = (TextView) itemView.findViewById(R.id.text_title);
         }
     }
 }

@@ -23,7 +23,6 @@ public class FeedParser {
                     // nothing to do
                 } else if (eventType == XmlPullParser.START_TAG) {
                     String elementName = parser.getName();
-                    // Log.d("mimic", "start tag : " + elementName);
                     if (elementName.equals("entry")) {
                         entries.add(parseEntry(parser));
                     }
@@ -56,6 +55,21 @@ public class FeedParser {
                 }
                 if ("title".equals(elementName)) {
                     entry.title = parser.nextText();
+                }
+                if ("author".equals(elementName)) {
+                    eventType = parser.nextTag();
+                    elementName = parser.getName();
+                    if (XmlPullParser.START_TAG == eventType && "name".equals(elementName)) {
+                        entry.authorName = parser.nextText();
+                    }
+                }
+                if ("thumbnail".equals(elementName)) {
+                    for (int i = 0, count = parser.getAttributeCount(); i < count; i++) {
+                        String attributeName = parser.getAttributeName(i);
+                        if ("url".equals(attributeName)) {
+                            entry.thumbnail = parser.getAttributeValue(i);
+                        }
+                    }
                 }
             }
             eventType = parser.next();
