@@ -23,10 +23,5 @@
         <activity android:name=".ui.activity.MainActivity" />
         <activity android:name=".ui.activity.SearchResultActivity" />
         <activity android:name=".ui.activity.MyPageActivity" />
-
-        <service
-            android:name=".service.GitHubApiService"
-            android:exported="false" />
     </application>
-
 </manifest>

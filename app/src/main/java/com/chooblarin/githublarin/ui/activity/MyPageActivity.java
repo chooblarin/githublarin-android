@@ -1,13 +1,9 @@
 package com.chooblarin.githublarin.ui.activity;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,15 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityMyPageBinding;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
-import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.util.List;
 
@@ -31,15 +27,15 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MyPageActivity extends RxAppCompatActivity
-        implements ServiceConnection {
+public class MyPageActivity extends BaseActivity {
 
-    private GitHubApiService service;
     private RepositoryAdapter repositoryAdapter;
 
     SimpleDraweeView avatarImage;
 
     ActivityMyPageBinding binding;
+
+    GitHubApiClient apiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +44,7 @@ public class MyPageActivity extends RxAppCompatActivity
         setupToolbar(binding.toolbar);
         setupCollapsingToolbar(binding.containerCollapsingMyPage);
         setupRepositoryListView(binding.recyclerview);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = new Intent(getApplicationContext(), GitHubApiService.class);
-        getApplicationContext().bindService(intent, this, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        getApplicationContext().unbindService(this);
+        setup();
     }
 
     @Override
@@ -85,35 +69,8 @@ public class MyPageActivity extends RxAppCompatActivity
     }
 
     @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-
-        service.user()
-                .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(_user -> {
-                    bindUser(_user);
-                }, throwable -> throwable.printStackTrace());
-
-        binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
-
-        service.repositories()
-                .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(_repositories -> {
-                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
-                    repositoryAdapter.setData(_repositories);
-                }, throwable -> {
-                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
-                    throwable.printStackTrace();
-                });
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        service = null;
+    protected void setupComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
     }
 
     private void setupToolbar(Toolbar toolbar) {
@@ -140,5 +97,29 @@ public class MyPageActivity extends RxAppCompatActivity
             avatarImage.setImageURI(Uri.parse(user.avatarUrl));
         }
         binding.setUser(user);
+    }
+
+    private void setup() {
+        apiClient.user()
+                .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(_user -> {
+                    bindUser(_user);
+                }, throwable -> throwable.printStackTrace());
+
+        binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
+
+        apiClient.repositories()
+                .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(_repositories -> {
+                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
+                    repositoryAdapter.setData(_repositories);
+                }, throwable -> {
+                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
+                    throwable.printStackTrace();
+                });
     }
 }

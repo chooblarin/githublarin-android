@@ -16,8 +16,6 @@ import com.chooblarin.githublarin.databinding.ActivityLoginBinding;
 import com.chooblarin.githublarin.model.User;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import javax.inject.Inject;
-
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -28,9 +26,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private ActivityLoginBinding binding;
-
-    @Inject
-    GitHubApiClient apiClient;
+    private GitHubApiClient apiClient;
 
     final private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
         @Override
@@ -56,7 +52,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    protected void setupActivityComponent() {
+    protected void setupComponent() {
         apiClient = Application.get(this).getAppComponent().apiClient();
     }
 
@@ -76,7 +72,6 @@ public class LoginActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
-                    apiClient.setUser(user);
                     startActivity(MainActivity.createIntent(LoginActivity.this, user));
                     finish();
 

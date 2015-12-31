@@ -1,12 +1,9 @@
 package com.chooblarin.githublarin.ui.activity;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivitySearchResultBinding;
 import com.chooblarin.githublarin.model.Repository;
-import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import java.util.List;
 
@@ -28,8 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SearchResultActivity extends RxAppCompatActivity
-        implements ServiceConnection {
+public class SearchResultActivity extends BaseActivity {
 
     private static final String EXTRA_SEARCH_KEY = "extra_search_key";
 
@@ -39,9 +35,9 @@ public class SearchResultActivity extends RxAppCompatActivity
         return intent;
     }
 
-    private GitHubApiService service;
     private String searchKey;
     private RepositoryAdapter repositoryAdapter;
+    GitHubApiClient apiClient;
     ActivitySearchResultBinding binding;
 
     @Override
@@ -54,20 +50,7 @@ public class SearchResultActivity extends RxAppCompatActivity
 
         setupToolbar(binding.toolbarSearchResult);
         setupSearchResultListView(binding.recyclerviewSearchResult);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Context context = getApplicationContext();
-        Intent intent = new Intent(context, GitHubApiService.class);
-        context.bindService(intent, this, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getApplicationContext().unbindService(this);
+        setup();
     }
 
     @Override
@@ -91,16 +74,9 @@ public class SearchResultActivity extends RxAppCompatActivity
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-
     @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-        setup();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        service = null;
+    protected void setupComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
     }
 
     private void setup() {
@@ -110,8 +86,7 @@ public class SearchResultActivity extends RxAppCompatActivity
 
         binding.progressSearchResult.setVisibility(View.VISIBLE);
 
-        service.searchRepository(searchKey, true)
-                .map(searchResponse -> searchResponse.items)
+        apiClient.searchRepository(searchKey, true)
                 .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

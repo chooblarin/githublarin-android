@@ -1,54 +1,34 @@
 package com.chooblarin.githublarin.ui.activity;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.model.User;
-import com.chooblarin.githublarin.service.GitHubApiService;
 import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class StartupActivity extends RxAppCompatActivity {
+public class StartupActivity extends BaseActivity {
 
-    final private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder iBinder) {
-            service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-            checkAuth();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            service = null;
-        }
-    };
-
-    private GitHubApiService service;
+    GitHubApiClient apiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup);
-        Context context = getApplicationContext();
-        Intent intent = new Intent(context, GitHubApiService.class);
-        context.bindService(intent, connection, BIND_AUTO_CREATE);
+        checkAuth();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        getApplicationContext().unbindService(connection);
+    protected void setupComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
     }
 
     private void checkAuth() {
@@ -65,12 +45,11 @@ public class StartupActivity extends RxAppCompatActivity {
     }
 
     private void login(String username, String password) {
-        service.login(username, password)
+        apiClient.login(username, password)
                 .compose(this.<User>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
-                    service.setUser(user);
                     Credential.save(getApplicationContext(), username, password);
 
                     startActivity(MainActivity.createIntent(this, user));

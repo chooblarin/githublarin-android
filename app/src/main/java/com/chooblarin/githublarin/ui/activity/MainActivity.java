@@ -1,13 +1,11 @@
 package com.chooblarin.githublarin.ui.activity;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,22 +19,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityMainBinding;
 import com.chooblarin.githublarin.model.User;
-import com.chooblarin.githublarin.service.GitHubApiService;
 import com.chooblarin.githublarin.ui.fragment.EventFragment;
 import com.chooblarin.githublarin.ui.fragment.GistFragment;
 import com.chooblarin.githublarin.ui.fragment.StarredFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.trello.rxlifecycle.ActivityEvent;
 
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MainActivity extends BaseActivity
-        implements ServiceConnection {
+public class MainActivity extends BaseActivity {
 
     private static final String EXTRA_USER = "extra_user";
 
@@ -47,17 +47,16 @@ public class MainActivity extends BaseActivity
         return intent;
     }
 
-    private GitHubApiService service;
-
     SimpleDraweeView avatarImage;
     TextView userNameText;
     TextView userLoginText;
 
+    @Inject
+    GitHubApiClient apiClient;
+
     private ActivityMainBinding binding;
 
     private SearchView searchView;
-
-    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,23 +68,8 @@ public class MainActivity extends BaseActivity
         setupNavigationView(binding.navigationView);
         showContent(R.id.nav_item_event);
 
-        user = getIntent().getParcelableExtra(EXTRA_USER);
-        if (null != user) {
-            bindUser(user);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = new Intent(getApplicationContext(), GitHubApiService.class);
-        getApplicationContext().bindService(intent, this, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        getApplicationContext().unbindService(this);
+        User user = getIntent().getParcelableExtra(EXTRA_USER);
+        setupUserData(user);
     }
 
     @Override
@@ -129,21 +113,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void setupActivityComponent() {
-
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-        if (null == user) {
-            setupUserData();
-        }
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        service = null;
+    protected void setupComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
     }
 
     public void showMyPage() {
@@ -206,17 +177,20 @@ public class MainActivity extends BaseActivity
         transaction.replace(R.id.container_content_main, fragment).commit();
     }
 
-    private void setupUserData() {
-        service.user()
-                .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(_user -> {
-                    MainActivity.this.user = _user;
-                    bindUser(_user);
-                }, throwable -> {
-                    throwable.printStackTrace();
-                });
+    private void setupUserData(@Nullable User user) {
+        if (null != user) {
+            bindUser(user);
+        } else {
+            apiClient.user()
+                    .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(_user -> {
+                        bindUser(_user);
+                    }, throwable -> {
+                        throwable.printStackTrace();
+                    });
+        }
     }
 
     private void bindUser(User u) {

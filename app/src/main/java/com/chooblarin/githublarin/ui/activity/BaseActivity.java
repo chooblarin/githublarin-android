@@ -9,8 +9,8 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActivityComponent();
+        setupComponent();
     }
 
-    protected abstract void setupActivityComponent();
+    protected abstract void setupComponent();
 }

@@ -1,7 +1,17 @@
 package com.chooblarin.githublarin.api.client;
 
 import com.chooblarin.githublarin.api.auth.Credential;
+import com.chooblarin.githublarin.model.Entry;
+import com.chooblarin.githublarin.model.FeedParser;
+import com.chooblarin.githublarin.model.Gist;
+import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -10,7 +20,6 @@ import rx.Subscriber;
 
 public class GitHubApiClient {
 
-    private User user;
     final Credential credential;
     final GitHubService gitHubService;
 
@@ -18,6 +27,11 @@ public class GitHubApiClient {
     public GitHubApiClient(GitHubService gitHubService, Credential credential) {
         this.gitHubService = gitHubService;
         this.credential = credential;
+    }
+
+    public Observable<List<Repository>> searchRepository(String keyword, boolean reverse) {
+        return gitHubService.query("repositories", keyword, "stars", reverse ? "desc" : "asc")
+                .map(searchResponse -> searchResponse.items);
     }
 
     public Observable<User> login(final String username, final String password) {
@@ -34,7 +48,48 @@ public class GitHubApiClient {
         }).flatMap(gitHubService::user);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public Observable<User> user() {
+        String username = credential.username();
+        return gitHubService.user(null != username ? username : "");
+    }
+
+    public Observable<List<Entry>> entries() {
+        return gitHubService.feeds().map(feedsResponse -> feedsResponse.currentUserUrl)
+                .flatMap(url -> Observable.create((Observable.OnSubscribe<Response>) subscriber -> {
+                    Request request = new Request.Builder().url(url).build();
+                    try {
+                        // todo : A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
+                        Response response = new OkHttpClient().newCall(request).execute();
+                        subscriber.onNext(response);
+                    } catch (IOException e) {
+                        subscriber.onError(e);
+                    }
+                    subscriber.onCompleted();
+                }))
+                .map(response -> {
+                    String bodyText = null;
+                    try {
+                        bodyText = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return bodyText;
+                })
+                .map(FeedParser::parseString);
+
+    }
+
+    public Observable<List<Repository>> repositories() {
+        String username = credential.username();
+        return gitHubService.usersRepositories(null != username ? username : "");
+    }
+
+    public Observable<List<Gist>> gists() {
+        return gitHubService.gists();
+    }
+
+    public Observable<List<Repository>> starredRepositories() {
+        String username = credential.username();
+        return gitHubService.starredRepositories(null != username ? username : "");
     }
 }
