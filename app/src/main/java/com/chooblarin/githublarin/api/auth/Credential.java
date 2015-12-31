@@ -13,6 +13,24 @@ public class Credential {
     public final static String PREFS_KEY_USER_NAME = "username";
     public final static String PREFS_KEY_PASSWORD = "password";
 
+    private Context context;
+    private SharedPreferences githubApiPrefs;
+
+    public Credential(Context context) {
+        this.context = context;
+        githubApiPrefs = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE);
+    }
+
+    public String username() {
+        String username = githubApiPrefs.getString(PREFS_KEY_USER_NAME, null);
+
+        if (TextUtils.isEmpty(username)) {
+            return null;
+        } else {
+            return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
+        }
+    }
+
     @Nullable
     public static String username(Context context) {
         SharedPreferences prefs
