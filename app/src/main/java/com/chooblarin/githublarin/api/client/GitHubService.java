@@ -13,7 +13,7 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
-public interface GitHubClient {
+public interface GitHubService {
 
     @GET("/search/{category}")
     Observable<SearchResponse> query(@Path("category") String category,

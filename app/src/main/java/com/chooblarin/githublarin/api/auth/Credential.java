@@ -7,6 +7,10 @@ import android.text.TextUtils;
 
 import com.chooblarin.githublarin.util.CryptUtil;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class Credential {
 
     public final static String PREFS_GITHUB_API = "prefs_github_api";
@@ -14,21 +18,41 @@ public class Credential {
     public final static String PREFS_KEY_PASSWORD = "password";
 
     private Context context;
-    private SharedPreferences githubApiPrefs;
+    private SharedPreferences gitHubApiPrefs;
 
+    @Inject
     public Credential(Context context) {
         this.context = context;
-        githubApiPrefs = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE);
+        gitHubApiPrefs = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE);
     }
 
     public String username() {
-        String username = githubApiPrefs.getString(PREFS_KEY_USER_NAME, null);
+        String username = gitHubApiPrefs.getString(PREFS_KEY_USER_NAME, null);
 
         if (TextUtils.isEmpty(username)) {
             return null;
         } else {
             return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
         }
+    }
+
+    public String password() {
+        String password = gitHubApiPrefs.getString(PREFS_KEY_PASSWORD, null);
+
+        if (TextUtils.isEmpty(password)) {
+            return null;
+        } else {
+            return CryptUtil.decrypt(context, PREFS_KEY_PASSWORD, password);
+        }
+    }
+
+    public boolean save(String username, String password) {
+        String u = CryptUtil.encrypt(context, PREFS_KEY_USER_NAME, username);
+        String p = CryptUtil.encrypt(context, PREFS_KEY_PASSWORD, password);
+        return gitHubApiPrefs.edit()
+                .putString(PREFS_KEY_USER_NAME, u)
+                .putString(PREFS_KEY_PASSWORD, p)
+                .commit();
     }
 
     @Nullable

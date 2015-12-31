@@ -1,7 +1,7 @@
 package com.chooblarin.githublarin.api;
 
 import com.chooblarin.githublarin.BuildConfig;
-import com.chooblarin.githublarin.api.client.GitHubClient;
+import com.chooblarin.githublarin.api.client.GitHubService;
 import com.chooblarin.githublarin.api.http.Header;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Interceptor;
@@ -20,7 +20,7 @@ public class ApiClientProvider {
 
     public final static String GITHUB_BASE_URL = "https://api.github.com";
 
-    public static GitHubClient gitHubClient(final String authorization) {
+    public static GitHubService gitHubClient(final String authorization) {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -46,7 +46,7 @@ public class ApiClientProvider {
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .baseUrl(GITHUB_BASE_URL)
                 .build()
-                .create(GitHubClient.class);
+                .create(GitHubService.class);
     }
 
     private ApiClientProvider() {

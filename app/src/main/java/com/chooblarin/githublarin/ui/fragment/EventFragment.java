@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.ApiClientProvider;
 import com.chooblarin.githublarin.api.auth.Credential;
-import com.chooblarin.githublarin.api.client.GitHubClient;
+import com.chooblarin.githublarin.api.client.GitHubService;
 import com.chooblarin.githublarin.databinding.FragmentEventBinding;
 import com.chooblarin.githublarin.model.Entry;
 import com.chooblarin.githublarin.model.FeedParser;
@@ -38,7 +38,7 @@ import rx.schedulers.Schedulers;
 public class EventFragment extends RxFragment implements OnItemClickListener {
 
     EventAdapter eventAdapter;
-    GitHubClient gitHubClient;
+    GitHubService gitHubClient;
     FragmentEventBinding binding;
 
     @Override

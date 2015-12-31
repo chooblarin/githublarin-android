@@ -1,36 +1,38 @@
 package com.chooblarin.githublarin.ui.activity;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityLoginBinding;
 import com.chooblarin.githublarin.model.User;
-import com.chooblarin.githublarin.service.GitHubApiService;
 import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
+import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class LoginActivity extends RxAppCompatActivity implements ServiceConnection {
+public class LoginActivity extends BaseActivity {
 
     public static Intent createIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
 
-    ActivityLoginBinding binding;
-    private GitHubApiService service;
-    public final View.OnClickListener onLoginClickListener = new View.OnClickListener() {
+    private ActivityLoginBinding binding;
+
+    @Inject
+    GitHubApiClient apiClient;
+
+    final private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             final String username = binding.editTextUsername.getText().toString();
@@ -44,28 +46,18 @@ public class LoginActivity extends RxAppCompatActivity implements ServiceConnect
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.textLoginButton.setOnClickListener(onLoginClickListener);
-
-        Context context = getApplicationContext();
-        Intent intent = new Intent(context, GitHubApiService.class);
-        context.bindService(intent, this, BIND_AUTO_CREATE);
+        checkAuth();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         binding.unbind();
-        getApplicationContext().unbindService(this);
     }
 
     @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        service = ((GitHubApiService.GitHubApiBinder) iBinder).getService();
-        checkAuth();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        service = null;
+    protected void setupActivityComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
     }
 
     private void checkAuth() {
@@ -79,14 +71,12 @@ public class LoginActivity extends RxAppCompatActivity implements ServiceConnect
     }
 
     private void login(String username, String password) {
-        service.login(username, password)
+        apiClient.login(username, password)
                 .compose(this.<User>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
-                    service.setUser(user);
-                    Credential.save(getApplicationContext(), username, password);
-
+                    apiClient.setUser(user);
                     startActivity(MainActivity.createIntent(LoginActivity.this, user));
                     finish();
 

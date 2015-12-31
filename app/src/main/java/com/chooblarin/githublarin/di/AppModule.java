@@ -1,6 +1,7 @@
 package com.chooblarin.githublarin.di;
 
 import android.app.Application;
+import android.content.Context;
 
 import javax.inject.Singleton;
 
@@ -18,7 +19,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Application provideApplication() {
+    public Context provideApplicationContext() {
         return application;
     }
 }
