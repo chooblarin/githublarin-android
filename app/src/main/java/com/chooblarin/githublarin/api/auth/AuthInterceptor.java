@@ -1,6 +1,5 @@
-package com.chooblarin.githublarin.api;
+package com.chooblarin.githublarin.api.auth;
 
-import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.http.Header;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.Interceptor;
