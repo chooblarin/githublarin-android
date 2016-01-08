@@ -55,34 +55,6 @@ public class Credential {
                 .commit();
     }
 
-    @Nullable
-    public static String username(Context context) {
-        SharedPreferences prefs
-                = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE);
-        String username = prefs.getString(PREFS_KEY_USER_NAME, null);
-
-        if (TextUtils.isEmpty(username)) {
-            return null;
-        } else {
-            // return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
-            return username;
-        }
-    }
-
-    @Nullable
-    public static String password(Context context) {
-        SharedPreferences prefs
-                = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE);
-        String password = prefs.getString(PREFS_KEY_PASSWORD, null);
-
-        if (TextUtils.isEmpty(password)) {
-            return null;
-        } else {
-            // return CryptUtil.decrypt(context, PREFS_KEY_PASSWORD, password);
-            return password;
-        }
-    }
-
     public static void save(Context context, String username, String password) {
         SharedPreferences.Editor editor
                 = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE).edit();
