@@ -26,11 +26,10 @@ public class AuthInterceptor implements Interceptor {
         Request request = chain.request();
         Request.Builder builder = request.newBuilder();
         builder.addHeader(Header.ACCEPT, "application/json");
-        if (null == authorization) {
-            String username = credential.username();
-            String password = credential.password();
-            authorization = Credentials.basic(username, password);
-        }
+        
+        String username = credential.username();
+        String password = credential.password();
+        authorization = Credentials.basic(username, password);
         builder.addHeader(Header.AUTHORIZATION, authorization);
         return chain.proceed(builder.build());
     }

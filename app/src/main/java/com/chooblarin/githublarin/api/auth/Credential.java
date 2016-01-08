@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.chooblarin.githublarin.util.CryptUtil;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -32,7 +30,8 @@ public class Credential {
         if (TextUtils.isEmpty(username)) {
             return null;
         } else {
-            return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
+            // return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
+            return username;
         }
     }
 
@@ -42,16 +41,17 @@ public class Credential {
         if (TextUtils.isEmpty(password)) {
             return null;
         } else {
-            return CryptUtil.decrypt(context, PREFS_KEY_PASSWORD, password);
+            // return CryptUtil.decrypt(context, PREFS_KEY_PASSWORD, password);
+            return password;
         }
     }
 
     public boolean save(String username, String password) {
-        String u = CryptUtil.encrypt(context, PREFS_KEY_USER_NAME, username);
-        String p = CryptUtil.encrypt(context, PREFS_KEY_PASSWORD, password);
+        // String u = CryptUtil.encrypt(context, PREFS_KEY_USER_NAME, username);
+        // String p = CryptUtil.encrypt(context, PREFS_KEY_PASSWORD, password);
         return gitHubApiPrefs.edit()
-                .putString(PREFS_KEY_USER_NAME, u)
-                .putString(PREFS_KEY_PASSWORD, p)
+                .putString(PREFS_KEY_USER_NAME, username)
+                .putString(PREFS_KEY_PASSWORD, password)
                 .commit();
     }
 
@@ -64,7 +64,8 @@ public class Credential {
         if (TextUtils.isEmpty(username)) {
             return null;
         } else {
-            return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
+            // return CryptUtil.decrypt(context, PREFS_KEY_USER_NAME, username);
+            return username;
         }
     }
 
@@ -77,16 +78,17 @@ public class Credential {
         if (TextUtils.isEmpty(password)) {
             return null;
         } else {
-            return CryptUtil.decrypt(context, PREFS_KEY_PASSWORD, password);
+            // return CryptUtil.decrypt(context, PREFS_KEY_PASSWORD, password);
+            return password;
         }
     }
 
     public static void save(Context context, String username, String password) {
         SharedPreferences.Editor editor
                 = context.getSharedPreferences(PREFS_GITHUB_API, Context.MODE_PRIVATE).edit();
-        String u = CryptUtil.encrypt(context, PREFS_KEY_USER_NAME, username);
-        String p = CryptUtil.encrypt(context, PREFS_KEY_PASSWORD, password);
-        editor.putString(PREFS_KEY_USER_NAME, u).apply();
-        editor.putString(PREFS_KEY_PASSWORD, p).apply();
+        // String u = CryptUtil.encrypt(context, PREFS_KEY_USER_NAME, username);
+        // String p = CryptUtil.encrypt(context, PREFS_KEY_PASSWORD, password);
+        editor.putString(PREFS_KEY_USER_NAME, username).apply();
+        editor.putString(PREFS_KEY_PASSWORD, password).apply();
     }
 }
