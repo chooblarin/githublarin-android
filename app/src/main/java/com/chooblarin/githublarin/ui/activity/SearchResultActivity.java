@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivitySearchResultBinding;
 import com.chooblarin.githublarin.model.Repository;
+import com.chooblarin.githublarin.provider.SuggestionsProvider;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -45,6 +47,8 @@ public class SearchResultActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         searchKey = intent.getStringExtra(EXTRA_SEARCH_KEY);
+        new SearchRecentSuggestions(this, SuggestionsProvider.AUTHORITY, SuggestionsProvider.MODE)
+                .saveRecentQuery(searchKey, null);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search_result);
 
