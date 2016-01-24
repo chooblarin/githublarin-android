@@ -8,9 +8,9 @@ import com.chooblarin.githublarin.model.User;
 
 import java.util.List;
 
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import retrofit.http.GET;
+import retrofit.http.Path;
+import retrofit.http.Query;
 import rx.Observable;
 
 public interface GitHubService {

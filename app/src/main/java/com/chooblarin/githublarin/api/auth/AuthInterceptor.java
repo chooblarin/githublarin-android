@@ -1,15 +1,14 @@
 package com.chooblarin.githublarin.api.auth;
 
 import com.chooblarin.githublarin.api.http.Header;
+import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
-
-import okhttp3.Credentials;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class AuthInterceptor implements Interceptor {
 

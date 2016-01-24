@@ -6,15 +6,15 @@ import com.chooblarin.githublarin.model.FeedParser;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
 

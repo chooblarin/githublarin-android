@@ -4,16 +4,16 @@ import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.AuthInterceptor;
 import com.chooblarin.githublarin.api.client.GitHubService;
 import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.GsonConverterFactory;
-import retrofit2.Retrofit;
-import retrofit2.RxJavaCallAdapterFactory;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
 
 @Module(includes = AppModule.class)
 public class ApiModule {
