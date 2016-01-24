@@ -2,7 +2,6 @@ package com.chooblarin.githublarin.api.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import javax.inject.Inject;

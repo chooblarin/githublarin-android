@@ -35,12 +35,9 @@
 
 -dontwarn rx.**
 
--dontwarn retrofit.**
--dontwarn retrofit.appengine.UrlFetchClient
--keep class retrofit.** { *; }
--keepclasseswithmembers class * {
-    @retrofit.http.* <methods>;
-}
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Exceptions
 
 # fresco
 # Keep our interfaces so they can be used by other ProGuard rules.
