@@ -17,7 +17,6 @@ import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +27,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityMainBinding;
 import com.chooblarin.githublarin.model.User;
-import com.chooblarin.githublarin.ui.fragment.EventFragment;
+import com.chooblarin.githublarin.ui.fragment.FeedFragment;
 import com.chooblarin.githublarin.ui.fragment.GistFragment;
 import com.chooblarin.githublarin.ui.fragment.StarredFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -192,7 +191,7 @@ public class MainActivity extends BaseActivity {
     private void showContent(int menuId) {
         switch (menuId) {
             case R.id.nav_item_event:
-                showFragment(new EventFragment(), false);
+                showFragment(new FeedFragment(), false);
                 break;
 
             case R.id.nav_item_gist:

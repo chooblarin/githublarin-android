@@ -12,9 +12,9 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.model.Entry;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-public class EventAdapter extends ArrayRecyclerAdapter<Entry, EventAdapter.ViewHolder> {
+public class FeedAdapter extends ArrayRecyclerAdapter<Entry, FeedAdapter.ViewHolder> {
 
-    public EventAdapter(@NonNull Context context) {
+    public FeedAdapter(@NonNull Context context) {
         super(context);
     }
 
@@ -41,7 +41,7 @@ public class EventAdapter extends ArrayRecyclerAdapter<Entry, EventAdapter.ViewH
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        static final int LAYOUT_ID = R.layout.list_item_event;
+        static final int LAYOUT_ID = R.layout.list_item_feed;
         SimpleDraweeView thumbnail;
         TextView title;
 
