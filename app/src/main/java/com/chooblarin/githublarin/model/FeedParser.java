@@ -12,8 +12,8 @@ import java.util.List;
 
 public class FeedParser {
 
-    public static List<Entry> parseString(String string) {
-        List<Entry> entries = new ArrayList<>();
+    public static List<Feed> parseString(String string) {
+        List<Feed> entries = new ArrayList<>();
         XmlPullParser parser = Xml.newPullParser();
         try {
             parser.setInput(new StringReader(string));
@@ -38,36 +38,36 @@ public class FeedParser {
         return entries;
     }
 
-    public static Entry parseEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
-        Entry entry = new Entry();
+    public static Feed parseEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
+        Feed feed = new Feed();
         int eventType = parser.getEventType();
         String elementName = parser.getName();
         while (eventType != XmlPullParser.END_TAG || !elementName.equals("entry")) {
             if (eventType == XmlPullParser.START_TAG) {
                 if ("published".equals(elementName)) {
-                    entry.published = parser.nextText();
+                    feed.published = parser.nextText();
                 }
                 if ("updated".equals(elementName)) {
-                    entry.updated = parser.nextText();
+                    feed.updated = parser.nextText();
                 }
                 if ("link".equals(elementName)) {
-                    entry.link = parser.nextText();
+                    feed.link = parser.nextText();
                 }
                 if ("title".equals(elementName)) {
-                    entry.title = parser.nextText();
+                    feed.title = parser.nextText();
                 }
                 if ("author".equals(elementName)) {
                     eventType = parser.nextTag();
                     elementName = parser.getName();
                     if (XmlPullParser.START_TAG == eventType && "name".equals(elementName)) {
-                        entry.authorName = parser.nextText();
+                        feed.authorName = parser.nextText();
                     }
                 }
                 if ("thumbnail".equals(elementName)) {
                     for (int i = 0, count = parser.getAttributeCount(); i < count; i++) {
                         String attributeName = parser.getAttributeName(i);
                         if ("url".equals(attributeName)) {
-                            entry.thumbnail = parser.getAttributeValue(i);
+                            feed.thumbnail = parser.getAttributeValue(i);
                         }
                     }
                 }
@@ -75,6 +75,6 @@ public class FeedParser {
             eventType = parser.next();
             elementName = parser.getName();
         }
-        return entry;
+        return feed;
     }
 }

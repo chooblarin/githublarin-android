@@ -1,6 +1,6 @@
 package com.chooblarin.githublarin.model;
 
-public class Entry {
+public class Feed {
 
     public String published;
     public String updated;

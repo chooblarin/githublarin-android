@@ -34,7 +34,6 @@ public abstract class ArrayRecyclerAdapter<T, VH extends RecyclerView.ViewHolder
 
     public void add(T item) {
         list.add(item);
-        notifyItemInserted(list.size() - 1);
     }
 
     public void addAll(Collection<T> items) {

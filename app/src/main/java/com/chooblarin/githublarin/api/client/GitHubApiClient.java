@@ -1,7 +1,7 @@
 package com.chooblarin.githublarin.api.client;
 
 import com.chooblarin.githublarin.api.auth.Credential;
-import com.chooblarin.githublarin.model.Entry;
+import com.chooblarin.githublarin.model.Feed;
 import com.chooblarin.githublarin.model.FeedParser;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
@@ -82,7 +82,7 @@ public class GitHubApiClient {
         });
     }
 
-    public Observable<List<Entry>> feeds(int page) {
+    public Observable<List<Feed>> feeds(int page) {
         return getFeeds(page).map(response -> {
             String bodyText = null;
             try {

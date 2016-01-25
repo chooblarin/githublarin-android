@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
-import com.chooblarin.githublarin.model.Entry;
+import com.chooblarin.githublarin.model.Feed;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-public class FeedAdapter extends ArrayRecyclerAdapter<Entry, FeedAdapter.ViewHolder> {
+public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHolder> {
 
     public FeedAdapter(@NonNull Context context) {
         super(context);
@@ -34,9 +34,9 @@ public class FeedAdapter extends ArrayRecyclerAdapter<Entry, FeedAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Entry entry = getItem(position);
-        holder.thumbnail.setImageURI(Uri.parse(entry.thumbnail));
-        holder.title.setText(entry.title);
+        Feed feed = getItem(position);
+        holder.thumbnail.setImageURI(Uri.parse(feed.thumbnail));
+        holder.title.setText(feed.title);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
