@@ -2,6 +2,7 @@ package com.chooblarin.githublarin.di;
 
 import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.AuthInterceptor;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.api.client.GitHubService;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;

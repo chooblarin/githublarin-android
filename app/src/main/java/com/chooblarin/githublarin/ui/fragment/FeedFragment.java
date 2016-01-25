@@ -21,7 +21,6 @@ import com.trello.rxlifecycle.FragmentEvent;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class FeedFragment extends BaseFragment implements OnItemClickListener {
@@ -29,6 +28,8 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
     private GitHubApiClient apiClient;
     FeedAdapter feedAdapter;
     FragmentFeedBinding binding;
+
+    private int currentPage = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,20 +50,15 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupEventListView(binding.recyclerviewEvent);
-        apiClient.entries()
+        apiClient.feeds(currentPage)
                 .compose(this.<List<Entry>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Entry>>() {
-                    @Override
-                    public void call(List<Entry> entries) {
-                        feedAdapter.addAll(entries);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
+                .subscribe(entries -> {
+                    currentPage++;
+                    feedAdapter.addAll(entries);
+                }, throwable -> {
+                    throwable.printStackTrace();
                 });
     }
 

@@ -17,14 +17,19 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.exceptions.Exceptions;
 
 public class GitHubApiClient {
 
+    final OkHttpClient httpClient;
     final Credential credential;
     final GitHubService gitHubService;
 
+    private volatile String currentUserUrl;
+
     @Inject
-    public GitHubApiClient(GitHubService gitHubService, Credential credential) {
+    public GitHubApiClient(OkHttpClient httpClient, GitHubService gitHubService, Credential credential) {
+        this.httpClient = httpClient;
         this.gitHubService = gitHubService;
         this.credential = credential;
     }
@@ -53,30 +58,40 @@ public class GitHubApiClient {
         return gitHubService.user(null != username ? username : "");
     }
 
-    public Observable<List<Entry>> entries() {
-        return gitHubService.feeds().map(feedsResponse -> feedsResponse.currentUserUrl)
-                .flatMap(url -> Observable.create((Observable.OnSubscribe<Response>) subscriber -> {
-                    Request request = new Request.Builder().url(url).build();
-                    try {
-                        // todo : A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
-                        Response response = new OkHttpClient().newCall(request).execute();
-                        subscriber.onNext(response);
-                    } catch (IOException e) {
-                        subscriber.onError(e);
-                    }
-                    subscriber.onCompleted();
-                }))
-                .map(response -> {
-                    String bodyText = null;
-                    try {
-                        bodyText = response.body().string();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return bodyText;
-                })
-                .map(FeedParser::parseString);
+    private Observable<Response> getFeeds(final int page) {
+        Observable<String> requestUrl;
+        if (null == currentUserUrl) {
+            requestUrl = gitHubService.feeds()
+                    .map(feedsResponse -> feedsResponse.currentUserUrl);
+        } else {
+            requestUrl = Observable.just(currentUserUrl);
+        }
 
+        return requestUrl.map(url -> {
+            Request request = new Request.Builder().url(url + "&page=" + page).build();
+            try {
+                // todo : A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
+                return httpClient.newCall(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw Exceptions.propagate(e);
+            }
+        }).onErrorResumeNext(throwable -> {
+            currentUserUrl = null;
+            return getFeeds(page);
+        });
+    }
+
+    public Observable<List<Entry>> feeds(int page) {
+        return getFeeds(page).map(response -> {
+            String bodyText = null;
+            try {
+                bodyText = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bodyText;
+        }).map(FeedParser::parseString);
     }
 
     public Observable<List<Repository>> repositories() {
