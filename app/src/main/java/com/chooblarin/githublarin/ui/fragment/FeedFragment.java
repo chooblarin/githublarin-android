@@ -26,11 +26,14 @@ import rx.schedulers.Schedulers;
 
 public class FeedFragment extends BaseFragment implements OnItemClickListener {
 
-    private GitHubApiClient apiClient;
-    FeedAdapter feedAdapter;
-    FragmentFeedBinding binding;
+    final static private int PAGE_SIZE = 30;
 
+    private GitHubApiClient apiClient;
+    private FeedAdapter feedAdapter;
+    private FragmentFeedBinding binding;
     private int currentPage = 1;
+    private boolean isLoading;
+    private boolean isLastPage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,6 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
         super.onViewCreated(view, savedInstanceState);
         setupSwipeRefreshLayout(binding.swipeRefreshFeed);
         setupFeedListView(binding.recyclerviewFeed);
-        loadFeeds();
     }
 
     @Override
@@ -74,37 +76,56 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
     private void setupSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout) {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             currentPage = 1;
-            loadFeeds();
+            feedAdapter.clear();
+            loadMoreFeeds();
         });
     }
 
     private void setupFeedListView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(feedAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                // todo: show more
+                int visibleCount = layoutManager.getChildCount();
+                int totalCount = layoutManager.getItemCount();
+                int firstVisibilityPosition = layoutManager.findFirstVisibleItemPosition();
+                if (isLoading || isLastPage) {
+                    return;
+                }
+
+                if (totalCount <= (firstVisibilityPosition + visibleCount)
+                        && 0 <= firstVisibilityPosition
+                        && PAGE_SIZE <= totalCount) {
+                    loadMoreFeeds();
+                }
             }
         });
+        loadMoreFeeds();
     }
 
-    private void loadFeeds() {
+    private void loadMoreFeeds() {
+        isLoading = true;
+        binding.swipeRefreshFeed.setRefreshing(true);
+
         apiClient.feeds(currentPage)
                 .compose(this.<List<Feed>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(feeds -> {
+                    isLoading = false;
                     binding.swipeRefreshFeed.setRefreshing(false);
-                    currentPage++;
-                    // todo: not yet works well
-                    int count = feedAdapter.getItemCount();
+
+                    int feedSize = feeds.size();
+                    isLastPage = feedSize < PAGE_SIZE;
                     feedAdapter.addAll(feeds);
-                    feedAdapter.notifyItemRangeInserted(count, feeds.size());
+                    feedAdapter.notifyItemRangeInserted(feedAdapter.getItemCount(), feedSize);
+                    currentPage++;
 
                 }, throwable -> {
+                    isLoading = false;
                     binding.swipeRefreshFeed.setRefreshing(false);
                     throwable.printStackTrace();
                 });
