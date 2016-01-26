@@ -9,4 +9,6 @@ public class Feed {
     public String authorName;
     public String authorUrl;
     public String thumbnail;
+
+    public Action action;
 }

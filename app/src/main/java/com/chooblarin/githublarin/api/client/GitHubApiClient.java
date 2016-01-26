@@ -95,6 +95,7 @@ public class GitHubApiClient {
         }).map(FeedParser::parseString)
                 .flatMap(Observable::from)
                 .compose(FeedConverter.expandThumbnail)
+                .compose(FeedConverter.discriminateAction)
                 .toList();
     }
 
