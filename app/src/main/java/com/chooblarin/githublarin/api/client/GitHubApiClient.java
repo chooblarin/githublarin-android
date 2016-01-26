@@ -2,6 +2,7 @@ package com.chooblarin.githublarin.api.client;
 
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.model.Feed;
+import com.chooblarin.githublarin.model.FeedConverter;
 import com.chooblarin.githublarin.model.FeedParser;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Repository;
@@ -91,7 +92,10 @@ public class GitHubApiClient {
                 e.printStackTrace();
             }
             return bodyText;
-        }).map(FeedParser::parseString);
+        }).map(FeedParser::parseString)
+                .flatMap(Observable::from)
+                .compose(FeedConverter.expandThumbnail)
+                .toList();
     }
 
     public Observable<List<Repository>> repositories() {
