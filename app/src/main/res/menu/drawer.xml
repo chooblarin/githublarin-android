@@ -4,29 +4,29 @@
         <item
             android:id="@+id/nav_item_event"
             android:checked="true"
-            android:icon="@android:drawable/ic_btn_speak_now"
-            android:title="Event" />
+            android:icon="@drawable/ic_subject_black_24dp"
+            android:title="@string/drawer_item_feed" />
         <item
             android:id="@+id/nav_item_gist"
-            android:icon="@android:drawable/ic_delete"
-            android:title="Gist" />
+            android:icon="@drawable/ic_insert_drive_file_black_24dp"
+            android:title="@string/drawer_item_gist" />
         <item
             android:id="@+id/nav_item_starred"
-            android:icon="@android:drawable/ic_delete"
-            android:title="Starred" />
+            android:icon="@drawable/ic_star_border_black_24dp"
+            android:title="@string/drawer_item_starred" />
 
         <item
             android:id="@+id/navigation_sub_header"
-            android:title="sub header">
+            android:title="@string/drawer_sub_header">
             <menu>
                 <item
-                    android:id="@+id/navigation_sub_item_1"
-                    android:icon="@android:drawable/ic_dialog_alert"
-                    android:title="sub 3" />
+                    android:id="@+id/nav_item_settings"
+                    android:icon="@drawable/ic_settings_black_24dp"
+                    android:title="@string/drawer_item_settings" />
                 <item
-                    android:id="@+id/navigation_sub_item_2"
-                    android:icon="@android:drawable/ic_dialog_email"
-                    android:title="sub 2" />
+                    android:id="@+id/nav_item_license"
+                    android:icon="@drawable/ic_favorite_border_black_24dp"
+                    android:title="@string/drawer_item_license" />
             </menu>
         </item>
     </group>
