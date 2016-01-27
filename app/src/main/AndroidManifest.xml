@@ -36,6 +36,7 @@
         </activity>
         <activity android:name=".ui.activity.SearchResultActivity" />
         <activity android:name=".ui.activity.MyPageActivity" />
+        <activity android:name=".ui.activity.RepositoryDetailActivity" />
 
         <provider
             android:name=".provider.SuggestionsProvider"
