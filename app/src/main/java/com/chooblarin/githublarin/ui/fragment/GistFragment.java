@@ -22,6 +22,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class GistFragment extends BaseFragment {
 
@@ -74,7 +75,7 @@ public class GistFragment extends BaseFragment {
                     gistAdapter.setData(_gists);
                 }, throwable -> {
                     binding.progressLoadingGist.setVisibility(View.GONE);
-                    throwable.printStackTrace();
+                    Timber.e(throwable, null);
                 });
     }
 

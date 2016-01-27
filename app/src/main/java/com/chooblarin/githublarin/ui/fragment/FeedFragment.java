@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,11 @@ import com.chooblarin.githublarin.ui.adapter.FeedAdapter;
 import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.trello.rxlifecycle.FragmentEvent;
 
-import org.threeten.bp.Duration;
-import org.threeten.bp.LocalDateTime;
-
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class FeedFragment extends BaseFragment implements OnItemClickListener {
 
@@ -132,7 +129,7 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
                 }, throwable -> {
                     isLoading = false;
                     binding.swipeRefreshFeed.setRefreshing(false);
-                    throwable.printStackTrace();
+                    Timber.e(throwable, null);
                 });
     }
 }

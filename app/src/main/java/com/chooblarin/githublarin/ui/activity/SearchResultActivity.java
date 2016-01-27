@@ -25,6 +25,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SearchResultActivity extends BaseActivity {
@@ -99,7 +100,7 @@ public class SearchResultActivity extends BaseActivity {
                     repositoryAdapter.setData(_repositories);
                 }, throwable -> {
                     binding.progressSearchResult.setVisibility(View.GONE);
-                    throwable.printStackTrace();
+                    Timber.e(throwable, null);
                 });
     }
 

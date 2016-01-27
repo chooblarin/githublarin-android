@@ -1,6 +1,5 @@
 package com.chooblarin.githublarin.ui.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class StarredFragment extends BaseFragment {
 
@@ -75,7 +75,7 @@ public class StarredFragment extends BaseFragment {
                     repositoryAdapter.setData(_repositories);
                 }, throwable -> {
                     binding.progressLoadingStarred.setVisibility(View.GONE);
-                    throwable.printStackTrace();
+                    Timber.e(throwable, null);
                 });
     }
 

@@ -9,6 +9,7 @@ import com.chooblarin.githublarin.di.DaggerAppComponent;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.LeakCanary;
 
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class Application extends android.app.Application {
@@ -42,6 +43,11 @@ public class Application extends android.app.Application {
                     .build());
         }
 
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            // todo: Timber.plant(...);
+        }
         LeakCanary.install(this);
     }
 

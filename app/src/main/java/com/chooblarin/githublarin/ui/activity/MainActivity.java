@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BaseActivity {
@@ -221,7 +222,7 @@ public class MainActivity extends BaseActivity {
                     .subscribe(_user -> {
                         bindUser(_user);
                     }, throwable -> {
-                        throwable.printStackTrace();
+                        Timber.e(throwable, null);
                     });
         }
     }

@@ -25,6 +25,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MyPageActivity extends BaseActivity {
@@ -106,7 +107,9 @@ public class MyPageActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
                     bindUser(_user);
-                }, throwable -> throwable.printStackTrace());
+                }, throwable -> {
+                    Timber.e(throwable, null);
+                });
 
         binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
 

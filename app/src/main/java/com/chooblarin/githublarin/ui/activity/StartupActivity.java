@@ -14,6 +14,7 @@ import com.trello.rxlifecycle.ActivityEvent;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class StartupActivity extends BaseActivity {
 
@@ -58,6 +59,7 @@ public class StartupActivity extends BaseActivity {
                     finish();
 
                 }, throwable -> {
+                    Timber.e(throwable, null);
                     Toast.makeText(getApplicationContext(), "ログイン失敗", Toast.LENGTH_SHORT).show();
                     startActivity(LoginActivity.createIntent(this));
                 });
