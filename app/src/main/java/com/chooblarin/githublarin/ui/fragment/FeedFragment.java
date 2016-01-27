@@ -71,6 +71,9 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
 
     @Override
     public void onItemClick(View view, int position) {
+        if (isLoading) {
+            return;
+        }
         Feed feed = feedAdapter.getItem(position);
         // todo: open detail page
     }

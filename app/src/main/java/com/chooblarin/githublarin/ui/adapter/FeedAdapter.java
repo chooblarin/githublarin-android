@@ -12,6 +12,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.model.Feed;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.threeten.bp.Clock;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
 
@@ -21,7 +22,7 @@ public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHold
 
     public FeedAdapter(@NonNull Context context) {
         super(context);
-        this.now = LocalDateTime.now();
+        this.now = LocalDateTime.now(Clock.systemUTC());
     }
 
     @Override
