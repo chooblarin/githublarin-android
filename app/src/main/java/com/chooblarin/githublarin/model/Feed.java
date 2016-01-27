@@ -2,6 +2,7 @@ package com.chooblarin.githublarin.model;
 
 public class Feed {
 
+    public String entryId;
     public String published;
     public String updated;
     public String title;

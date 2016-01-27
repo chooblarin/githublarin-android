@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,8 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
 
     @Override
     public void onItemClick(View view, int position) {
-        // todo
+        Feed feed = feedAdapter.getItem(position);
+        // todo: open detail page
     }
 
     private void setupSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout) {

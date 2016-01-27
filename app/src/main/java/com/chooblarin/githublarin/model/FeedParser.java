@@ -44,6 +44,9 @@ public class FeedParser {
         String elementName = parser.getName();
         while (eventType != XmlPullParser.END_TAG || !elementName.equals("entry")) {
             if (eventType == XmlPullParser.START_TAG) {
+                if ("id".equals(elementName)) {
+                    feed.entryId = parser.nextText();
+                }
                 if ("published".equals(elementName)) {
                     feed.published = parser.nextText();
                 }
@@ -51,7 +54,13 @@ public class FeedParser {
                     feed.updated = parser.nextText();
                 }
                 if ("link".equals(elementName)) {
-                    feed.link = parser.nextText();
+                    for (int i = 0, count = parser.getAttributeCount(); i < count; i++) {
+                        String attrName = parser.getAttributeName(i);
+                        if ("href".equals(attrName)) {
+                            feed.link = parser.getAttributeValue(i);
+                        }
+                    }
+
                 }
                 if ("title".equals(elementName)) {
                     feed.title = parser.nextText();
