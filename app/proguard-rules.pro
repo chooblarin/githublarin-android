@@ -21,6 +21,11 @@
 # retrolambda
 -dontwarn java.lang.invoke.*
 
+# Threeten backport
+-dontwarn java.util.spi.LocaleServiceProvider
+-dontwarn sun.util.calendar.*
+-keep class org.threeten.bp.zone.*
+
 # Gson uses generic type information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.
 -keepattributes Signature

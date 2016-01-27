@@ -23,7 +23,6 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         initAppComponent();
-
         Fresco.initialize(this);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()

@@ -12,10 +12,16 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.model.Feed;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDateTime;
+
 public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHolder> {
+
+    final private LocalDateTime now;
 
     public FeedAdapter(@NonNull Context context) {
         super(context);
+        this.now = LocalDateTime.now();
     }
 
     @Override
@@ -37,6 +43,8 @@ public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHold
         Feed feed = getItem(position);
         holder.thumbnail.setImageURI(Uri.parse(feed.thumbnail));
         holder.title.setText(feed.title);
+        long hours = Duration.between(feed.published, now).toHours();
+        holder.publishedAt.setText(String.format("%d hours ago", hours));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,11 +52,13 @@ public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHold
         static final int LAYOUT_ID = R.layout.list_item_feed;
         SimpleDraweeView thumbnail;
         TextView title;
+        TextView publishedAt;
 
         public ViewHolder(View itemView) {
             super(itemView);
             thumbnail = (SimpleDraweeView) itemView.findViewById(R.id.image_thumbnail);
             title = (TextView) itemView.findViewById(R.id.text_title);
+            publishedAt = (TextView) itemView.findViewById(R.id.text_published_at);
         }
     }
 }

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="68dp">
+    android:layout_height="72dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/image_thumbnail"
@@ -13,11 +13,28 @@
         android:layout_marginStart="@dimen/space_medium" />
 
     <TextView
+        android:id="@+id/text_published_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/space_small"
+        android:layout_marginRight="@dimen/space_small"
+        android:layout_marginTop="@dimen/space_small"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/text_size_small"
+        tools:text="9 hours ago" />
+
+    <TextView
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_margin="@dimen/space_large"
+        android:layout_below="@+id/text_published_at"
+        android:layout_marginEnd="@dimen/space_medium"
+        android:layout_marginLeft="@dimen/space_large"
+        android:layout_marginRight="@dimen/space_large"
+        android:layout_marginTop="@dimen/space_small"
         android:layout_toEndOf="@+id/image_thumbnail"
         android:layout_toRightOf="@+id/image_thumbnail"
         tools:text="shaunkawano starred gfx/Android-Orma" />

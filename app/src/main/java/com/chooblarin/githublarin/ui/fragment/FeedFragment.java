@@ -20,6 +20,9 @@ import com.chooblarin.githublarin.ui.adapter.FeedAdapter;
 import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.trello.rxlifecycle.FragmentEvent;
 
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDateTime;
+
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;

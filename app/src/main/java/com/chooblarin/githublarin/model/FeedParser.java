@@ -2,6 +2,8 @@ package com.chooblarin.githublarin.model;
 
 import android.util.Xml;
 
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -46,9 +48,12 @@ public class FeedParser {
             if (eventType == XmlPullParser.START_TAG) {
                 if ("id".equals(elementName)) {
                     feed.entryId = parser.nextText();
+
                 }
                 if ("published".equals(elementName)) {
-                    feed.published = parser.nextText();
+                    String publishedString = parser.nextText();
+                    feed.published = LocalDateTime.parse(publishedString,
+                            DateTimeFormatter.ofPattern("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"));
                 }
                 if ("updated".equals(elementName)) {
                     feed.updated = parser.nextText();
@@ -60,7 +65,6 @@ public class FeedParser {
                             feed.link = parser.getAttributeValue(i);
                         }
                     }
-
                 }
                 if ("title".equals(elementName)) {
                     feed.title = parser.nextText();
