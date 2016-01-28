@@ -3,6 +3,7 @@ package com.chooblarin.githublarin.api.client;
 import com.chooblarin.githublarin.api.response.FeedsResponse;
 import com.chooblarin.githublarin.api.response.SearchResponse;
 import com.chooblarin.githublarin.model.Gist;
+import com.chooblarin.githublarin.model.Notification;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
 
@@ -34,4 +35,7 @@ public interface GitHubService {
 
     @GET("/users/{username}/starred")
     Observable<List<Repository>> starredRepositories(@Path("username") String username);
+
+    @GET("/notifications")
+    Observable<List<Notification>> notifications();
 }

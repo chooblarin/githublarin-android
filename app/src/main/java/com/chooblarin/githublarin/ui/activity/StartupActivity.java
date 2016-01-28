@@ -68,9 +68,11 @@ public class StartupActivity extends BaseActivity {
             if (400 <= code && code < 500) {
                 Toast.makeText(getApplicationContext(), "ログイン失敗", Toast.LENGTH_SHORT).show();
                 startActivity(LoginActivity.createIntent(this));
+                finish();
 
             } else if (500 <= code) {
                 startActivity(UnicornActivity.createIntent(this));
+                finish();
             }
         }
     }

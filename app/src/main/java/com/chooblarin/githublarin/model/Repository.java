@@ -5,7 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Repository {
 
+    @Expose
+    @SerializedName("id")
     public long id;
+
+    @Expose
+    @SerializedName("name")
     public String name;
 
     @Expose
