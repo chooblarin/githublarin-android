@@ -12,6 +12,7 @@ import com.chooblarin.githublarin.di.AppComponent;
 import com.chooblarin.githublarin.model.User;
 import com.trello.rxlifecycle.ActivityEvent;
 
+import retrofit.HttpException;
 import timber.log.Timber;
 
 public class StartupActivity extends BaseActivity {
@@ -56,8 +57,21 @@ public class StartupActivity extends BaseActivity {
 
                 }, throwable -> {
                     Timber.e(throwable, null);
-                    Toast.makeText(getApplicationContext(), "ログイン失敗", Toast.LENGTH_SHORT).show();
-                    startActivity(LoginActivity.createIntent(this));
+                    handleError(throwable);
                 });
+    }
+
+    private void handleError(Throwable throwable) {
+        if (throwable instanceof HttpException) {
+            HttpException exception = (HttpException) throwable;
+            int code = exception.code();
+            if (400 <= code && code < 500) {
+                Toast.makeText(getApplicationContext(), "ログイン失敗", Toast.LENGTH_SHORT).show();
+                startActivity(LoginActivity.createIntent(this));
+
+            } else if (500 <= code) {
+                startActivity(UnicornActivity.createIntent(this));
+            }
+        }
     }
 }
