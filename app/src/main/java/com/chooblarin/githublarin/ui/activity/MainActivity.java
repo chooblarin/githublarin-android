@@ -113,6 +113,9 @@ public class MainActivity extends BaseActivity {
             case android.R.id.home:
                 binding.drawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.notification_menu:
+                startActivity(NotificationListActivity.createIntent(this));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

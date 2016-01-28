@@ -5,6 +5,7 @@ import com.chooblarin.githublarin.model.Feed;
 import com.chooblarin.githublarin.model.FeedConverter;
 import com.chooblarin.githublarin.model.FeedParser;
 import com.chooblarin.githublarin.model.Gist;
+import com.chooblarin.githublarin.model.Notification;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
 import com.squareup.okhttp.OkHttpClient;
@@ -62,6 +63,11 @@ public class GitHubApiClient {
         String username = credential.username();
         return gitHubService
                 .user(null != username ? username : "")
+                .compose(applySchedulers());
+    }
+
+    public Observable<List<Notification>> notifications() {
+        return gitHubService.notifications()
                 .compose(applySchedulers());
     }
 
