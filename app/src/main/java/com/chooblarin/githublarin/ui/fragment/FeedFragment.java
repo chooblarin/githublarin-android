@@ -22,8 +22,6 @@ import com.trello.rxlifecycle.FragmentEvent;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class FeedFragment extends BaseFragment implements OnItemClickListener {
@@ -118,8 +116,6 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
 
         apiClient.feeds(currentPage)
                 .compose(this.<List<Feed>>bindUntilEvent(FragmentEvent.STOP))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(feeds -> {
                     isLoading = false;
                     binding.swipeRefreshFeed.setRefreshing(false);

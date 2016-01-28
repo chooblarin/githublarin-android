@@ -23,8 +23,6 @@ import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -93,8 +91,6 @@ public class SearchResultActivity extends BaseActivity {
 
         apiClient.searchRepository(searchKey, true)
                 .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
                     binding.progressSearchResult.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);

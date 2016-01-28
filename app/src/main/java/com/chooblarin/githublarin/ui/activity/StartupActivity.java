@@ -12,8 +12,6 @@ import com.chooblarin.githublarin.di.AppComponent;
 import com.chooblarin.githublarin.model.User;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class StartupActivity extends BaseActivity {
@@ -50,8 +48,6 @@ public class StartupActivity extends BaseActivity {
     private void login(String username, String password) {
         apiClient.login(username, password)
                 .compose(this.<User>bindUntilEvent(ActivityEvent.DESTROY))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user -> {
                     Credential.save(getApplicationContext(), username, password);
 

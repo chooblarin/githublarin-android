@@ -20,8 +20,6 @@ import com.trello.rxlifecycle.FragmentEvent;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class GistFragment extends BaseFragment {
@@ -68,8 +66,6 @@ public class GistFragment extends BaseFragment {
 
         apiClient.gists()
                 .compose(this.<List<Gist>>bindUntilEvent(FragmentEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_gists -> {
                     binding.progressLoadingGist.setVisibility(View.GONE);
                     gistAdapter.setData(_gists);

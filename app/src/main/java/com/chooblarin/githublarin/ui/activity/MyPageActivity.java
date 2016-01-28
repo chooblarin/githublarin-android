@@ -23,8 +23,6 @@ import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -103,8 +101,6 @@ public class MyPageActivity extends BaseActivity {
     private void setup() {
         apiClient.user()
                 .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_user -> {
                     bindUser(_user);
                 }, throwable -> {
@@ -115,8 +111,6 @@ public class MyPageActivity extends BaseActivity {
 
         apiClient.repositories()
                 .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
                     binding.progressLoadingMyRepo.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);

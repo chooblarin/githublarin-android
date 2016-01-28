@@ -20,8 +20,6 @@ import com.trello.rxlifecycle.FragmentEvent;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class StarredFragment extends BaseFragment {
@@ -68,8 +66,6 @@ public class StarredFragment extends BaseFragment {
 
         apiClient.starredRepositories()
                 .compose(this.<List<Repository>>bindUntilEvent(FragmentEvent.STOP))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(_repositories -> {
                     binding.progressLoadingStarred.setVisibility(View.GONE);
                     repositoryAdapter.setData(_repositories);

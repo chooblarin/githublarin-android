@@ -35,8 +35,6 @@ import com.trello.rxlifecycle.ActivityEvent;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -217,8 +215,6 @@ public class MainActivity extends BaseActivity {
         } else {
             apiClient.user()
                     .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(_user -> {
                         bindUser(_user);
                     }, throwable -> {

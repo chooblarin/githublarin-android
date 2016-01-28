@@ -17,8 +17,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Observable.Transformer;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.exceptions.Exceptions;
+import rx.schedulers.Schedulers;
 
 public class GitHubApiClient {
 
@@ -37,7 +40,8 @@ public class GitHubApiClient {
 
     public Observable<List<Repository>> searchRepository(String keyword, boolean reverse) {
         return gitHubService.query("repositories", keyword, "stars", reverse ? "desc" : "asc")
-                .map(searchResponse -> searchResponse.items);
+                .map(searchResponse -> searchResponse.items)
+                .compose(applySchedulers());
     }
 
     public Observable<User> login(final String username, final String password) {
@@ -51,12 +55,48 @@ public class GitHubApiClient {
                     subscriber.onError(new Error()); // todo
                 }
             }
-        }).flatMap(gitHubService::user);
+        }).flatMap(gitHubService::user).compose(applySchedulers());
     }
 
     public Observable<User> user() {
         String username = credential.username();
-        return gitHubService.user(null != username ? username : "");
+        return gitHubService
+                .user(null != username ? username : "")
+                .compose(applySchedulers());
+    }
+
+    public Observable<List<Feed>> feeds(int page) {
+        return getFeeds(page).map(response -> {
+            String bodyText = null;
+            try {
+                bodyText = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bodyText;
+        }).map(FeedParser::parseString)
+                .flatMap(Observable::from)
+                .compose(FeedConverter.expandThumbnail)
+                .compose(FeedConverter.discriminateAction)
+                .toList()
+                .compose(this.<List<Feed>>applySchedulers());
+    }
+
+    public Observable<List<Repository>> repositories() {
+        String username = credential.username();
+        return gitHubService.usersRepositories(null != username ? username : "")
+                .compose(applySchedulers());
+    }
+
+    public Observable<List<Gist>> gists() {
+        return gitHubService.gists()
+                .compose(applySchedulers());
+    }
+
+    public Observable<List<Repository>> starredRepositories() {
+        String username = credential.username();
+        return gitHubService.starredRepositories(null != username ? username : "")
+                .compose(applySchedulers());
     }
 
     private Observable<Response> getFeeds(final int page) {
@@ -83,33 +123,14 @@ public class GitHubApiClient {
         });
     }
 
-    public Observable<List<Feed>> feeds(int page) {
-        return getFeeds(page).map(response -> {
-            String bodyText = null;
-            try {
-                bodyText = response.body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
+    private <T> Transformer<T, T> applySchedulers() {
+        return new Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
             }
-            return bodyText;
-        }).map(FeedParser::parseString)
-                .flatMap(Observable::from)
-                .compose(FeedConverter.expandThumbnail)
-                .compose(FeedConverter.discriminateAction)
-                .toList();
-    }
-
-    public Observable<List<Repository>> repositories() {
-        String username = credential.username();
-        return gitHubService.usersRepositories(null != username ? username : "");
-    }
-
-    public Observable<List<Gist>> gists() {
-        return gitHubService.gists();
-    }
-
-    public Observable<List<Repository>> starredRepositories() {
-        String username = credential.username();
-        return gitHubService.starredRepositories(null != username ? username : "");
+        };
     }
 }
