@@ -107,6 +107,9 @@ public class NotificationListActivity extends BaseActivity implements OnItemClic
         } else {
             binding.viewEmptyNotification.setVisibility(View.GONE);
             binding.recyclerviewNotification.setVisibility(View.VISIBLE);
+            adapter.clear();
+            adapter.addAll(notificationList);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -144,7 +147,8 @@ public class NotificationListActivity extends BaseActivity implements OnItemClic
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-
+            Notification notification = getItem(position);
+            holder.title.setText(notification.id); // todo:
         }
     }
 }

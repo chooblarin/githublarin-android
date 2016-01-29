@@ -22,13 +22,13 @@ public class Notification implements Parcelable {
 
     @SerializedName("repository")
     @Expose
-    public List<Repository> repositories;
+    public Repository repository;
 
     @SerializedName("unread")
     @Expose
     public boolean unread;
 
-    @SerializedName("update_at")
+    @SerializedName("updated_at")
     @Expose
     public LocalDateTime updatedAt;
 
@@ -40,14 +40,19 @@ public class Notification implements Parcelable {
     @Expose
     public String url;
 
+    @SerializedName("subscription_url")
+    @Expose
+    public String subscriptionUrl;
+
     protected Notification(Parcel in) {
         id = in.readString();
         reason = in.readString();
-        repositories = in.createTypedArrayList(Repository.CREATOR);
+        // repositories = in.readParcelable();
         unread = in.readByte() != 0;
         updatedAt = (LocalDateTime) in.readSerializable();
         lastReadAt = (LocalDateTime) in.readSerializable();
         url = in.readString();
+        subscriptionUrl = in.readString();
     }
 
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
@@ -71,10 +76,11 @@ public class Notification implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(reason);
-        dest.writeTypedList(repositories);
+        // dest.writeTypedList(repositories);
         dest.writeByte((byte) (unread ? 1 : 0));
         dest.writeSerializable(updatedAt);
         dest.writeSerializable(lastReadAt);
         dest.writeString(url);
+        dest.writeString(subscriptionUrl);
     }
 }

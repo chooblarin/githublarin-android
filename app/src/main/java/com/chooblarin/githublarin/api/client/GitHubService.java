@@ -40,6 +40,9 @@ public interface GitHubService {
     Observable<List<Repository>> starredRepositories(@Path("username") String username);
 
     @GET("/notifications")
+    Observable<List<Notification>> notifications();
+
+    @GET("/notifications")
     Observable<List<Notification>> notifications(@Header("If-Modified-Since") String timestamp);
 
     @GET("/notifications")

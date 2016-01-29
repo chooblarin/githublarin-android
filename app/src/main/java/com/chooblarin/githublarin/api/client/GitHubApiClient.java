@@ -79,10 +79,14 @@ public class GitHubApiClient {
 
     public Observable<List<Notification>> notifications() {
         long millis = SessionManager.get(context).getNotificationLastModifiedAt();
-        LocalDateTime dateTime
-                = 0 == millis ? LocalDateTime.now() : DateTimeUtils.localDateTimeFrom(millis);
-        return gitHubService.notifications(DateTimeUtils.timeStamp(dateTime))
-                .compose(applySchedulers());
+        final Observable<List<Notification>> observable;
+        if (0 == millis) {
+            observable = gitHubService.notifications();
+        } else {
+            LocalDateTime dateTime = DateTimeUtils.localDateTimeFrom(millis);
+            observable = gitHubService.notifications(DateTimeUtils.timeStamp(dateTime));
+        }
+        return observable.compose(applySchedulers());
     }
 
     public Observable<List<Feed>> feeds(int page) {
