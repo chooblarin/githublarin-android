@@ -1,9 +1,11 @@
 package com.chooblarin.githublarin.di;
 
+import android.content.Context;
+
 import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.AuthInterceptor;
-import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.api.client.GitHubService;
+import com.chooblarin.githublarin.api.session.SessionManager;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;

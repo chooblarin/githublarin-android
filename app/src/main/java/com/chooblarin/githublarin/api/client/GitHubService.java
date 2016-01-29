@@ -9,7 +9,9 @@ import com.chooblarin.githublarin.model.User;
 
 import java.util.List;
 
+import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Header;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -21,6 +23,7 @@ public interface GitHubService {
                                      @Query("q") String keyword,
                                      @Query("sort") String sort,
                                      @Query("order") String order);
+
     @GET("/feeds")
     Observable<FeedsResponse> feeds();
 
@@ -37,5 +40,8 @@ public interface GitHubService {
     Observable<List<Repository>> starredRepositories(@Path("username") String username);
 
     @GET("/notifications")
-    Observable<List<Notification>> notifications();
+    Observable<List<Notification>> notifications(@Header("If-Modified-Since") String timestamp);
+
+    @GET("/notifications")
+    Call<List<Notification>> notificationsSync(@Header("If-Modified-Since") String timestamp);
 }

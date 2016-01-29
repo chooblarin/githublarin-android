@@ -25,6 +25,7 @@ import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 
 import java.util.List;
 
+import retrofit.HttpException;
 import timber.log.Timber;
 
 public class NotificationListActivity extends BaseActivity implements OnItemClickListener {
@@ -89,6 +90,13 @@ public class NotificationListActivity extends BaseActivity implements OnItemClic
                     bindNotifications(notifications);
                 }, throwable -> {
                     Timber.e(throwable, null);
+                    if (throwable instanceof HttpException) {
+                        HttpException exception = (HttpException) throwable;
+                        int statusCode = exception.code();
+                        if (304 == statusCode) {
+                            // todo: not modified
+                        }
+                    }
                 });
     }
 

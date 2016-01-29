@@ -1,6 +1,9 @@
 package com.chooblarin.githublarin.api.client;
 
+import android.content.Context;
+
 import com.chooblarin.githublarin.api.auth.Credential;
+import com.chooblarin.githublarin.api.session.SessionManager;
 import com.chooblarin.githublarin.model.Feed;
 import com.chooblarin.githublarin.model.FeedConverter;
 import com.chooblarin.githublarin.model.FeedParser;
@@ -8,9 +11,12 @@ import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Notification;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
+import com.chooblarin.githublarin.util.DateTimeUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import org.threeten.bp.LocalDateTime;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,14 +32,19 @@ import rx.schedulers.Schedulers;
 
 public class GitHubApiClient {
 
+    final Context context;
     final OkHttpClient httpClient;
-    final Credential credential;
     final GitHubService gitHubService;
+    final Credential credential;
 
     private volatile String currentUserUrl;
 
     @Inject
-    public GitHubApiClient(OkHttpClient httpClient, GitHubService gitHubService, Credential credential) {
+    public GitHubApiClient(Context context,
+                           OkHttpClient httpClient,
+                           GitHubService gitHubService,
+                           Credential credential) {
+        this.context = context;
         this.httpClient = httpClient;
         this.gitHubService = gitHubService;
         this.credential = credential;
@@ -67,7 +78,10 @@ public class GitHubApiClient {
     }
 
     public Observable<List<Notification>> notifications() {
-        return gitHubService.notifications()
+        long millis = SessionManager.get(context).getNotificationLastModifiedAt();
+        LocalDateTime dateTime
+                = 0 == millis ? LocalDateTime.now() : DateTimeUtils.localDateTimeFrom(millis);
+        return gitHubService.notifications(DateTimeUtils.timeStamp(dateTime))
                 .compose(applySchedulers());
     }
 
