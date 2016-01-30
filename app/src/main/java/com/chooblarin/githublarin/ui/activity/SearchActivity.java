@@ -12,30 +12,34 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.api.RetryWithConnectivityIncremental;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivitySearchBinding;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener {
+
+    public static final String TAG = SearchActivity.class.getSimpleName();
 
     public static Intent createIntent(Context context) {
         return new Intent(context, SearchActivity.class);
     }
-
-    private SearchView searchView;
 
     private RepositoryAdapter repositoryAdapter;
     private GitHubApiClient apiClient;
@@ -82,12 +86,23 @@ public class SearchActivity extends BaseActivity {
                 return true;
             }
         });
-        searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
         searchView.onActionViewExpanded();
+        Context context = getApplicationContext();
+        RxSearchView.queryTextChanges(searchView)
+                .debounce(1000L, TimeUnit.MILLISECONDS)
+                .filter(_searchKey -> !TextUtils.isEmpty(_searchKey))
+                .switchMap(_searchKey -> apiClient.searchRepository(_searchKey.toString(), true))
+                .compose(bindUntilEvent(ActivityEvent.STOP))
+                .retryWhen(new RetryWithConnectivityIncremental(context, 15L, 30L, TimeUnit.SECONDS))
+                .subscribe(this::bindSearchResult,
+                        throwable -> {
+                            Timber.tag(TAG).e(throwable, null);
+                        });
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -110,6 +125,16 @@ public class SearchActivity extends BaseActivity {
         handleIntent(intent);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
     private void setupToolbar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -127,13 +152,16 @@ public class SearchActivity extends BaseActivity {
         binding.progressSearchResult.setVisibility(View.VISIBLE);
         apiClient.searchRepository(searchKey, true)
                 .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
-                .subscribe(_repositories -> {
-                    binding.progressSearchResult.setVisibility(View.GONE);
-                    repositoryAdapter.setData(_repositories);
-                }, throwable -> {
-                    binding.progressSearchResult.setVisibility(View.GONE);
-                    Timber.e(throwable, null);
-                });
+                .subscribe(this::bindSearchResult,
+                        throwable -> {
+                            binding.progressSearchResult.setVisibility(View.GONE);
+                            Timber.tag(TAG).e(throwable, null);
+                        });
+    }
+
+    private void bindSearchResult(List<Repository> repositories) {
+        binding.progressSearchResult.setVisibility(View.GONE);
+        repositoryAdapter.setData(repositories);
     }
 
     private void handleIntent(@NonNull Intent intent) {

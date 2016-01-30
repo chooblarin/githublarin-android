@@ -55,12 +55,12 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Vi
 
     public void addAll(List<Repository> repositories) {
         this.repositories.addAll(repositories);
-        notifyDataSetChanged();
     }
 
     public void setData(List<Repository> repositories) {
         this.repositories.clear();
         addAll(repositories);
+        notifyDataSetChanged();
     }
 
     public Repository getDataAt(int position) {
