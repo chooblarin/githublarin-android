@@ -48,7 +48,7 @@ public class Application extends android.app.Application {
         } else {
             // todo: Timber.plant(...);
         }
-        LeakCanary.install(this);
+        // LeakCanary.install(this);
     }
 
     public AppComponent getAppComponent() {
