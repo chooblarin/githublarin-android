@@ -1,21 +1,16 @@
 package com.chooblarin.githublarin.ui.activity;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +44,6 @@ public class MainActivity extends BaseActivity {
         return intent;
     }
 
-    SearchView searchView;
     SimpleDraweeView avatarImage;
     TextView userNameText;
     TextView userLoginText;
@@ -71,7 +65,6 @@ public class MainActivity extends BaseActivity {
 
         User user = getIntent().getParcelableExtra(EXTRA_USER);
         setupUserData(user);
-        handleIntent(getIntent());
     }
 
     @Override
@@ -83,26 +76,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        MenuItem menuItem = menu.findItem(R.id.search_menu_search_view);
-        MenuItemCompat.setOnActionExpandListener(menuItem, new OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // todo
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                // todo
-                return true;
-            }
-        });
-        searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         return true;
     }
 
@@ -115,6 +88,9 @@ public class MainActivity extends BaseActivity {
                 return true;
             case R.id.notification_menu:
                 startActivity(NotificationListActivity.createIntent(this));
+                return true;
+            case R.id.search_menu:
+                startActivity(SearchActivity.createIntent(this));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -130,12 +106,6 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
@@ -143,13 +113,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void setupComponent() {
         apiClient = Application.get(this).getAppComponent().apiClient();
-    }
-
-    private void handleIntent(@NonNull Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            startActivity(SearchResultActivity.createIntent(this, query));
-        }
     }
 
     public void showMyPage() {
