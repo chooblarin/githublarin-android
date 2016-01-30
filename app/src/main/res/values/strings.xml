@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">githublarin</string>
+    <string name="app_name">Githublarin</string>
 
     <!-- common -->
     <string name="past_time_days_format">%d days ago</string>
@@ -17,6 +17,11 @@
     <string name="action_notification">Notification</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search Hint</string>
+
+    <!-- login -->
+    <string name="login">Login</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
 
     <!-- drawer -->
     <string name="drawer_item_feed">Feed</string>
