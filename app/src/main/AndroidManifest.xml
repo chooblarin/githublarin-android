@@ -35,6 +35,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.NotificationListActivity" />
+        <!-- <activity android:name=".ui.activity.NotificationDetailActivity" /> -->
         <activity android:name=".ui.activity.SearchResultActivity" />
         <activity android:name=".ui.activity.MyPageActivity" />
         <activity android:name=".ui.activity.RepositoryDetailActivity" />

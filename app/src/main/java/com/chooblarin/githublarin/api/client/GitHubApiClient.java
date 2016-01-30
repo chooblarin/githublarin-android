@@ -90,15 +90,18 @@ public class GitHubApiClient {
     }
 
     public Observable<List<Feed>> feeds(int page) {
-        return getFeeds(page).map(response -> {
-            String bodyText = null;
-            try {
-                bodyText = response.body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return bodyText;
-        }).map(FeedParser::parseString)
+        Observable<String> requestUrl;
+        if (null == currentUserUrl) {
+            requestUrl = gitHubService.feeds()
+                    .map(feedsResponse -> {
+                        currentUserUrl = feedsResponse.currentUserUrl;
+                        return feedsResponse.currentUserUrl;
+                    });
+        } else {
+            requestUrl = Observable.just(currentUserUrl);
+        }
+        return requestUrl.flatMap(url -> execRequest(url + "&page=" + page))
+                .map(FeedParser::parseString)
                 .flatMap(Observable::from)
                 .compose(FeedConverter.expandThumbnail)
                 .compose(FeedConverter.discriminateAction)
@@ -123,28 +126,24 @@ public class GitHubApiClient {
                 .compose(applySchedulers());
     }
 
-    private Observable<Response> getFeeds(final int page) {
-        Observable<String> requestUrl;
-        if (null == currentUserUrl) {
-            requestUrl = gitHubService.feeds()
-                    .map(feedsResponse -> feedsResponse.currentUserUrl);
-        } else {
-            requestUrl = Observable.just(currentUserUrl);
-        }
-
-        return requestUrl.map(url -> {
-            Request request = new Request.Builder().url(url + "&page=" + page).build();
+    private Observable<String> execRequest(String url) {
+        Request request = new Request.Builder().url(url).build();
+        return Observable.create((Subscriber<? super Response> subscriber) -> {
             try {
                 // todo : A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
-                return httpClient.newCall(request).execute();
+                Response response = httpClient.newCall(request).execute();
+                subscriber.onNext(response);
+                subscriber.onCompleted();
             } catch (IOException e) {
-                e.printStackTrace();
+                subscriber.onError(e);
+            }
+        }).map(response -> {
+            try {
+                return response.body().string();
+            } catch (IOException e) {
                 throw Exceptions.propagate(e);
             }
-        }).onErrorResumeNext(throwable -> {
-            currentUserUrl = null;
-            return getFeeds(page);
-        });
+        }).compose(applySchedulers());
     }
 
     private <T> Transformer<T, T> applySchedulers() {
