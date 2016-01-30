@@ -68,7 +68,9 @@ public class StarredFragment extends BaseFragment {
                 .compose(this.<List<Repository>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(_repositories -> {
                     binding.progressLoadingStarred.setVisibility(View.GONE);
-                    repositoryAdapter.setData(_repositories);
+                    repositoryAdapter.clear();
+                    repositoryAdapter.addAll(_repositories);
+                    repositoryAdapter.notifyDataSetChanged();
                 }, throwable -> {
                     binding.progressLoadingStarred.setVisibility(View.GONE);
                     Timber.e(throwable, null);

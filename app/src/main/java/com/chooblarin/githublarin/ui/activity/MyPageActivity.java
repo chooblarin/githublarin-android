@@ -113,7 +113,9 @@ public class MyPageActivity extends BaseActivity {
                 .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
                 .subscribe(_repositories -> {
                     binding.progressLoadingMyRepo.setVisibility(View.GONE);
-                    repositoryAdapter.setData(_repositories);
+                    repositoryAdapter.clear();
+                    repositoryAdapter.addAll(_repositories);
+                    repositoryAdapter.notifyDataSetChanged();
                 }, throwable -> {
                     binding.progressLoadingMyRepo.setVisibility(View.GONE);
                     throwable.printStackTrace();

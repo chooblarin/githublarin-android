@@ -161,7 +161,9 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private void bindSearchResult(List<Repository> repositories) {
         binding.progressSearchResult.setVisibility(View.GONE);
-        repositoryAdapter.setData(repositories);
+        repositoryAdapter.clear();
+        repositoryAdapter.addAll(repositories);
+        repositoryAdapter.notifyDataSetChanged();
     }
 
     private void handleIntent(@NonNull Intent intent) {

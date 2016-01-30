@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="96dp"
-    android:padding="8dp"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/text_full_name_repository"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/cbr_color_100"
-        android:textSize="16sp"
-        tools:text="facebook / stetho"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp">
 
-    <TextView
-        android:id="@+id/text_description_repository"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/text_full_name_repository"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/cbr_color_light_gray"
-        android:textSize="14sp"
-        android:ellipsize="end"
-        tools:text="Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more."/>
+        <TextView
+            android:id="@+id/text_full_name_repository"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_medium"
+            android:textColor="@color/cbr_color_100"
+            android:textSize="16sp"
+            tools:text="facebook / stetho" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/text_description_repository"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/text_full_name_repository"
+            android:layout_marginBottom="@dimen/space_medium"
+            android:layout_marginLeft="@dimen/space_medium"
+            android:layout_marginRight="@dimen/space_medium"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/cbr_color_light_gray"
+            android:textSize="14sp"
+            tools:text="Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more." />
+    </RelativeLayout>
+</layout>

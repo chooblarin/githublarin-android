@@ -1,69 +1,49 @@
 package com.chooblarin.githublarin.ui.adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.databinding.ListItemRepositoryBinding;
 import com.chooblarin.githublarin.model.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+public class RepositoryAdapter
+        extends ArrayRecyclerAdapter<Repository, RepositoryAdapter.ViewHolder> {
 
-public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.ViewHolder> {
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView fullName;
-        TextView description;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            fullName = (TextView) itemView.findViewById(R.id.text_full_name_repository);
-            description = (TextView) itemView.findViewById(R.id.text_description_repository);
-        }
-    }
-
-    private LayoutInflater inflater;
-    private List<Repository> repositories;
-
-    public RepositoryAdapter(Context context) {
-        this.inflater = LayoutInflater.from(context);
-        this.repositories = new ArrayList<>();
+    public RepositoryAdapter(@NonNull Context context) {
+        super(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.list_item_repository, parent, false);
-        return new ViewHolder(view);
+        View view = inflater.inflate(ViewHolder.LAYOUT_ID, parent, false);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.itemView.setOnClickListener(v -> {
+            int position = holder.getAdapterPosition();
+            dispatchItemClickEvent(v, position);
+        });
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Repository repository = repositories.get(position);
-        holder.fullName.setText(repository.fullName);
-        holder.description.setText(repository.description);
+        Repository repository = getItem(position);
+        holder.binding.textFullNameRepository.setText(repository.fullName);
+        holder.binding.textDescriptionRepository.setText(repository.description);
     }
 
-    @Override
-    public int getItemCount() {
-        return repositories.size();
-    }
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-    public void addAll(List<Repository> repositories) {
-        this.repositories.addAll(repositories);
-    }
+        final static int LAYOUT_ID = R.layout.list_item_repository;
+        final ListItemRepositoryBinding binding;
 
-    public void setData(List<Repository> repositories) {
-        this.repositories.clear();
-        addAll(repositories);
-        notifyDataSetChanged();
-    }
-
-    public Repository getDataAt(int position) {
-        return this.repositories.get(position);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.binding = DataBindingUtil.bind(itemView);
+        }
     }
 }
