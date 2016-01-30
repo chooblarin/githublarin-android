@@ -7,6 +7,13 @@
     <string name="past_time_minutes_format">%d minutes ago</string>
     <string name="past_time_just_now_format">Just now</string>
 
+    <string name="updated_on">Updated on %s</string>
+    <string name="updated_days_ago">Updated %d days ago</string>
+    <string name="updated_hours_ago">Updated %d hours ago</string>
+    <string name="updated_minutes_ago">Updated %d minutes ago</string>
+    <string name="updated_a_few_minutes_ago">Updated a few minutes ago</string>
+
+
     <string name="action_notification">Notification</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search Hint</string>

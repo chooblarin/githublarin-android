@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.threeten.bp.LocalDateTime;
+
 public class Repository implements Parcelable {
 
     @Expose
@@ -21,10 +23,11 @@ public class Repository implements Parcelable {
     public String fullName;
 
     @Expose
+    @SerializedName("language")
     public String language;
 
     @Expose
-    @SerializedName("star_gazers_count")
+    @SerializedName("stargazers_count")
     public int starGazersCount;
 
     @Expose
@@ -36,6 +39,7 @@ public class Repository implements Parcelable {
     public int forksCount;
 
     @Expose
+    @SerializedName("description")
     public String description;
 
     @Expose
@@ -43,7 +47,16 @@ public class Repository implements Parcelable {
     public boolean isPrivate;
 
     @Expose
+    @SerializedName("owner")
     public User owner;
+
+    @Expose
+    @SerializedName("created_at")
+    public LocalDateTime createdAt;
+
+    @Expose
+    @SerializedName("updated_at")
+    public LocalDateTime updatedAt;
 
     protected Repository(Parcel in) {
         id = in.readLong();

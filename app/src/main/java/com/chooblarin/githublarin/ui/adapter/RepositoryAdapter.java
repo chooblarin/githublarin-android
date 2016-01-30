@@ -10,12 +10,21 @@ import android.view.ViewGroup;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.ListItemRepositoryBinding;
 import com.chooblarin.githublarin.model.Repository;
+import com.chooblarin.githublarin.util.DateTimeUtils;
+
+import org.threeten.bp.Clock;
+import org.threeten.bp.LocalDateTime;
+
+import java.text.NumberFormat;
 
 public class RepositoryAdapter
         extends ArrayRecyclerAdapter<Repository, RepositoryAdapter.ViewHolder> {
 
+    final private LocalDateTime now;
+
     public RepositoryAdapter(@NonNull Context context) {
         super(context);
+        this.now = LocalDateTime.now(Clock.systemUTC());
     }
 
     @Override
@@ -32,8 +41,18 @@ public class RepositoryAdapter
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Repository repository = getItem(position);
-        holder.binding.textFullNameRepository.setText(repository.fullName);
-        holder.binding.textDescriptionRepository.setText(repository.description);
+        ListItemRepositoryBinding binding = holder.binding;
+        binding.textFullNameRepository.setText(repository.fullName);
+        binding.textDescriptionRepository.setText(repository.description);
+        binding.textLanguageRepository.setText(repository.language);
+
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        binding.textStarsCountRepository.setText(numberFormat.format(repository.starGazersCount));
+        binding.textForksCountRepository.setText(numberFormat.format(repository.forksCount));
+
+        Context context = holder.itemView.getContext();
+        String updatedAt = DateTimeUtils.updatedAtString(context, now, repository.updatedAt);
+        binding.textRepositoryUpdatedAt.setText(updatedAt);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -4,22 +4,80 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="96dp">
+        android:layout_height="112dp">
 
         <TextView
             android:id="@+id/text_full_name_repository"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_medium"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/space_medium"
+            android:layout_marginLeft="@dimen/space_medium"
+            android:layout_marginStart="@dimen/space_medium"
+            android:layout_marginTop="@dimen/space_medium"
+            android:layout_toLeftOf="@+id/container_repository_meta_info"
+            android:layout_toStartOf="@+id/container_repository_meta_info"
+            android:ellipsize="end"
             android:textColor="@color/cbr_color_100"
             android:textSize="16sp"
             tools:text="facebook / stetho" />
+
+        <LinearLayout
+            android:id="@+id/container_repository_meta_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/space_small"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_language_repository"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/space_small"
+                android:layout_marginRight="@dimen/space_small"
+                android:gravity="center"
+                android:textColor="@color/cbr_color_light_gray"
+                android:textSize="@dimen/text_size_small"
+                tools:text="Python" />
+
+            <TextView
+                android:id="@+id/text_stars_count_repository"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/space_xsmall"
+                android:layout_marginRight="@dimen/space_xsmall"
+                android:drawableLeft="@drawable/ic_star_black_18dp"
+                android:drawablePadding="@dimen/space_xxsmall"
+                android:drawableStart="@drawable/ic_star_black_18dp"
+                android:gravity="center"
+                android:textColor="@color/cbr_color_light_gray"
+                android:textSize="@dimen/text_size_small"
+                tools:text="1,778" />
+
+            <TextView
+                android:id="@+id/text_forks_count_repository"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/space_xsmall"
+                android:layout_marginRight="@dimen/space_xsmall"
+                android:drawableLeft="@drawable/ic_redo_black_18dp"
+                android:drawablePadding="@dimen/space_xxsmall"
+                android:drawableStart="@drawable/ic_redo_black_18dp"
+                android:gravity="center"
+                android:textColor="@color/cbr_color_light_gray"
+                android:textSize="@dimen/text_size_small"
+                tools:text="424" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_description_repository"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_below="@+id/text_full_name_repository"
             android:layout_marginBottom="@dimen/space_medium"
             android:layout_marginLeft="@dimen/space_medium"
@@ -29,5 +87,15 @@
             android:textColor="@color/cbr_color_light_gray"
             android:textSize="14sp"
             tools:text="Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more." />
+
+        <TextView
+            android:id="@+id/text_repository_updated_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/space_medium"
+            android:textColor="@color/cbr_color_light_gray"
+            android:textSize="@dimen/text_size_small"
+            tools:text="Updated on 20 Jun 2015" />
     </RelativeLayout>
 </layout>
