@@ -12,16 +12,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityNotificationListBinding;
+import com.chooblarin.githublarin.databinding.ListItemNotificationBinding;
 import com.chooblarin.githublarin.di.AppComponent;
 import com.chooblarin.githublarin.model.Notification;
 import com.chooblarin.githublarin.ui.adapter.ArrayRecyclerAdapter;
 import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
+import com.chooblarin.githublarin.util.DateTimeUtils;
+
+import org.threeten.bp.Clock;
+import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
 
@@ -116,19 +120,21 @@ public class NotificationListActivity extends BaseActivity implements OnItemClic
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         static final int LAYOUT_ID = R.layout.list_item_notification;
-
-        TextView title;
+        final ListItemNotificationBinding binding;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.text_notification_title);
+            binding = DataBindingUtil.bind(itemView);
         }
     }
 
     static class Adapter extends ArrayRecyclerAdapter<Notification, ViewHolder> {
 
+        final private LocalDateTime now;
+
         public Adapter(@NonNull Context context) {
             super(context);
+            this.now = LocalDateTime.now(Clock.systemUTC());
         }
 
         @Override
@@ -148,7 +154,10 @@ public class NotificationListActivity extends BaseActivity implements OnItemClic
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             Notification notification = getItem(position);
-            holder.title.setText(notification.id); // todo:
+            holder.binding.textNotificationTitle.setText(notification.subject.title);
+            Context context = holder.itemView.getContext();
+            holder.binding.textUpdatedAt
+                    .setText(DateTimeUtils.pastTimeString(context, now, notification.updatedAt));
         }
     }
 }

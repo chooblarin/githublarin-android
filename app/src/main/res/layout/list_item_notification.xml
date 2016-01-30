@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="68dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/text_notification_title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_margin="@dimen/space_medium"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/text_size_medium"
-        tools:text="notification title" />
-</RelativeLayout>
+        android:layout_height="68dp">
+
+        <ImageView
+            android:id="@+id/image_notification_type"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/space_medium"
+            tools:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/text_notification_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/image_notification_type"
+            android:layout_toRightOf="@+id/image_notification_type"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/text_size_medium"
+            tools:text="notification title" />
+
+        <TextView
+            android:id="@+id/text_updated_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/space_small"
+            android:textColor="@color/cbr_color_light_gray"
+            android:textSize="@dimen/text_size_small"
+            tools:text="31 min ago" />
+    </RelativeLayout>
+</layout>

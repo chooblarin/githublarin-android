@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">githublarin</string>
 
+    <!-- common -->
+    <string name="past_time_days_format">%d days ago</string>
+    <string name="past_time_hours_format">%d hours ago</string>
+    <string name="past_time_minutes_format">%d minutes ago</string>
+    <string name="past_time_just_now_format">Just now</string>
+
     <string name="action_notification">Notification</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search Hint</string>

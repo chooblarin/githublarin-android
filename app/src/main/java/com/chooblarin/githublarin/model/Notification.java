@@ -8,8 +8,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.threeten.bp.LocalDateTime;
 
-import java.util.List;
-
 public class Notification implements Parcelable {
 
     @SerializedName("id")
@@ -19,10 +17,6 @@ public class Notification implements Parcelable {
     @SerializedName("reason")
     @Expose
     public String reason;
-
-    @SerializedName("repository")
-    @Expose
-    public Repository repository;
 
     @SerializedName("unread")
     @Expose
@@ -36,6 +30,14 @@ public class Notification implements Parcelable {
     @Expose
     public LocalDateTime lastReadAt;
 
+    @SerializedName("subject")
+    @Expose
+    public NotificationSubject subject;
+
+    @SerializedName("repository")
+    @Expose
+    public Repository repository;
+
     @SerializedName("url")
     @Expose
     public String url;
@@ -47,10 +49,9 @@ public class Notification implements Parcelable {
     protected Notification(Parcel in) {
         id = in.readString();
         reason = in.readString();
-        // repositories = in.readParcelable();
         unread = in.readByte() != 0;
-        updatedAt = (LocalDateTime) in.readSerializable();
-        lastReadAt = (LocalDateTime) in.readSerializable();
+        subject = in.readParcelable(NotificationSubject.class.getClassLoader());
+        repository = in.readParcelable(Repository.class.getClassLoader());
         url = in.readString();
         subscriptionUrl = in.readString();
     }
@@ -76,10 +77,9 @@ public class Notification implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(reason);
-        // dest.writeTypedList(repositories);
         dest.writeByte((byte) (unread ? 1 : 0));
-        dest.writeSerializable(updatedAt);
-        dest.writeSerializable(lastReadAt);
+        dest.writeParcelable(subject, flags);
+        dest.writeParcelable(repository, flags);
         dest.writeString(url);
         dest.writeString(subscriptionUrl);
     }

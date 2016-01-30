@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.model.Feed;
+import com.chooblarin.githublarin.util.DateTimeUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.threeten.bp.Clock;
-import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
 
 public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHolder> {
@@ -44,8 +44,8 @@ public class FeedAdapter extends ArrayRecyclerAdapter<Feed, FeedAdapter.ViewHold
         Feed feed = getItem(position);
         holder.thumbnail.setImageURI(Uri.parse(feed.thumbnail));
         holder.title.setText(feed.title);
-        long hours = Duration.between(feed.published, now).toHours();
-        holder.publishedAt.setText(String.format("%d hours ago", hours));
+        Context context = holder.itemView.getContext();
+        holder.publishedAt.setText(DateTimeUtils.pastTimeString(context, now, feed.published));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
