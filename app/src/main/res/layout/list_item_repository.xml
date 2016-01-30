@@ -41,7 +41,6 @@
                 android:layout_marginEnd="@dimen/space_small"
                 android:layout_marginRight="@dimen/space_small"
                 android:gravity="center"
-                android:textColor="@color/cbr_color_light_gray"
                 android:textSize="@dimen/text_size_small"
                 tools:text="Python" />
 
@@ -51,11 +50,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/space_xsmall"
                 android:layout_marginRight="@dimen/space_xsmall"
-                android:drawableLeft="@drawable/ic_star_black_18dp"
+                android:drawableLeft="@drawable/ic_star_white_18dp"
                 android:drawablePadding="@dimen/space_xxsmall"
-                android:drawableStart="@drawable/ic_star_black_18dp"
+                android:drawableStart="@drawable/ic_star_white_18dp"
                 android:gravity="center"
-                android:textColor="@color/cbr_color_light_gray"
                 android:textSize="@dimen/text_size_small"
                 tools:text="1,778" />
 
@@ -65,11 +63,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/space_xsmall"
                 android:layout_marginRight="@dimen/space_xsmall"
-                android:drawableLeft="@drawable/ic_redo_black_18dp"
+                android:drawableLeft="@drawable/ic_call_split_white_18dp"
                 android:drawablePadding="@dimen/space_xxsmall"
-                android:drawableStart="@drawable/ic_redo_black_18dp"
+                android:drawableStart="@drawable/ic_call_split_white_18dp"
                 android:gravity="center"
-                android:textColor="@color/cbr_color_light_gray"
                 android:textSize="@dimen/text_size_small"
                 tools:text="424" />
         </LinearLayout>
@@ -84,7 +81,6 @@
             android:layout_marginRight="@dimen/space_medium"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/cbr_color_light_gray"
             android:textSize="14sp"
             tools:text="Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more." />
 
