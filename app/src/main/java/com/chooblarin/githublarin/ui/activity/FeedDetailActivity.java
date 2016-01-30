@@ -11,20 +11,20 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.chooblarin.githublarin.R;
-import com.chooblarin.githublarin.databinding.ActivityRepositoryDetailBinding;
-import com.chooblarin.githublarin.model.Repository;
+import com.chooblarin.githublarin.databinding.ActivityFeedDetailBinding;
+import com.chooblarin.githublarin.model.Feed;
 
-public class RepositoryDetailActivity extends BaseActivity {
+public class FeedDetailActivity extends BaseActivity {
 
-    public static final String EXTRA_REPOSITORY = "extra_repository";
+    private static final String EXTRA_FEED = "EXTRA_FEED";
 
-    public static Intent createIntent(Context context, Repository repository) {
-        Intent intent = new Intent(context, RepositoryDetailActivity.class);
-        intent.putExtra(EXTRA_REPOSITORY, repository);
+    public static Intent createIntent(Context context, Feed feed) {
+        Intent intent = new Intent(context, FeedDetailActivity.class);
+        intent.putExtra(EXTRA_FEED, feed);
         return intent;
     }
 
-    ActivityRepositoryDetailBinding binding;
+    private ActivityFeedDetailBinding binding;
 
     @Override
     protected void setupComponent() {
@@ -33,11 +33,10 @@ public class RepositoryDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_repository_detail);
-
-        Repository repository = getIntent().getParcelableExtra(EXTRA_REPOSITORY);
-        setupToolbar(binding.toolbarRepositoryDetail, repository.fullName);
-        setupWebView(binding.webViewRepositoryDetail, repository.getWebUrl());
+        Feed feed = getIntent().getParcelableExtra(EXTRA_FEED);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_feed_detail);
+        setupToolbar(binding.toolbarFeedDetail, feed.title);
+        setupWebView(binding.webViewFeedDetail, feed.link);
     }
 
     @Override

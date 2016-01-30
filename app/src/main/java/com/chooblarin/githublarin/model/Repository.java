@@ -47,6 +47,14 @@ public class Repository implements Parcelable {
     public boolean isPrivate;
 
     @Expose
+    @SerializedName("fork")
+    public boolean fork;
+
+    @Expose
+    @SerializedName("url")
+    public String url;
+
+    @Expose
     @SerializedName("owner")
     public User owner;
 
@@ -58,6 +66,10 @@ public class Repository implements Parcelable {
     @SerializedName("updated_at")
     public LocalDateTime updatedAt;
 
+    public String getWebUrl() {
+        return String.format("https://github.com/%s", fullName);
+    }
+
     protected Repository(Parcel in) {
         id = in.readLong();
         name = in.readString();
@@ -68,6 +80,8 @@ public class Repository implements Parcelable {
         forksCount = in.readInt();
         description = in.readString();
         isPrivate = in.readByte() != 0;
+        fork = in.readByte() != 0;
+        url = in.readString();
         owner = in.readParcelable(User.class.getClassLoader());
     }
 
@@ -99,6 +113,8 @@ public class Repository implements Parcelable {
         dest.writeInt(forksCount);
         dest.writeString(description);
         dest.writeByte((byte) (isPrivate ? 1 : 0));
+        dest.writeByte((byte) (fork ? 1 : 0));
+        dest.writeString(url);
         dest.writeParcelable(owner, flags);
     }
 }

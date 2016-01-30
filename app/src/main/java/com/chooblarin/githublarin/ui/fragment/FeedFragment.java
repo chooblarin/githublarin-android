@@ -15,7 +15,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.FragmentFeedBinding;
 import com.chooblarin.githublarin.model.Feed;
-import com.chooblarin.githublarin.ui.activity.RepositoryDetailActivity;
+import com.chooblarin.githublarin.ui.activity.FeedDetailActivity;
 import com.chooblarin.githublarin.ui.adapter.FeedAdapter;
 import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.trello.rxlifecycle.FragmentEvent;
@@ -74,7 +74,7 @@ public class FeedFragment extends BaseFragment implements OnItemClickListener {
             return;
         }
         Feed feed = feedAdapter.getItem(position);
-        startActivity(RepositoryDetailActivity.createIntent(getActivity(), feed.link));
+        startActivity(FeedDetailActivity.createIntent(getActivity(), feed));
     }
 
     private void setupSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout) {

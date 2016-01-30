@@ -26,6 +26,7 @@
             android:launchMode="singleTop" />
         <activity android:name=".ui.activity.NotificationListActivity" />
         <!-- <activity android:name=".ui.activity.NotificationDetailActivity" /> -->
+        <activity android:name=".ui.activity.FeedDetailActivity" />
         <activity
             android:name=".ui.activity.SearchActivity"
             android:launchMode="singleTop"

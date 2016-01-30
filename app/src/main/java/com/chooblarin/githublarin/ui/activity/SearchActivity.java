@@ -24,6 +24,7 @@ import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivitySearchBinding;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
+import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener {
+public class SearchActivity extends BaseActivity implements OnItemClickListener {
 
     public static final String TAG = SearchActivity.class.getSimpleName();
 
@@ -88,7 +89,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         });
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(this);
         searchView.onActionViewExpanded();
         Context context = getApplicationContext();
         RxSearchView.queryTextChanges(searchView)
@@ -126,13 +126,9 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
+    public void onItemClick(View view, int position) {
+        Repository repository = repositoryAdapter.getItem(position);
+        startActivity(RepositoryDetailActivity.createIntent(this, repository));
     }
 
     private void setupToolbar(Toolbar toolbar) {
@@ -144,6 +140,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private void setupSearchResultListView(RecyclerView recyclerView) {
         repositoryAdapter = new RepositoryAdapter(this);
+        repositoryAdapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(repositoryAdapter);
     }

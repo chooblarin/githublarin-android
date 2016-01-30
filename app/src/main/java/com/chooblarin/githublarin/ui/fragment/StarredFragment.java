@@ -15,14 +15,18 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.FragmentStarredBinding;
 import com.chooblarin.githublarin.model.Repository;
+import com.chooblarin.githublarin.ui.activity.RepositoryDetailActivity;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
+import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.trello.rxlifecycle.FragmentEvent;
 
 import java.util.List;
 
 import timber.log.Timber;
 
-public class StarredFragment extends BaseFragment {
+public class StarredFragment extends BaseFragment implements OnItemClickListener {
+
+    public static final String TAG = StarredFragment.class.getSimpleName();
 
     private GitHubApiClient apiClient;
     private RepositoryAdapter repositoryAdapter;
@@ -30,9 +34,15 @@ public class StarredFragment extends BaseFragment {
     FragmentStarredBinding binding;
 
     @Override
+    protected void setupComponent() {
+        apiClient = Application.get(getContext()).getAppComponent().apiClient();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         repositoryAdapter = new RepositoryAdapter(context);
+        repositoryAdapter.setOnItemClickListener(this);
     }
 
     @Nullable
@@ -57,8 +67,9 @@ public class StarredFragment extends BaseFragment {
     }
 
     @Override
-    protected void setupComponent() {
-        apiClient = Application.get(getContext()).getAppComponent().apiClient();
+    public void onItemClick(View view, int position) {
+        Repository repository = repositoryAdapter.getItem(position);
+        startActivity(RepositoryDetailActivity.createIntent(getActivity(), repository));
     }
 
     private void setup() {
@@ -73,7 +84,7 @@ public class StarredFragment extends BaseFragment {
                     repositoryAdapter.notifyDataSetChanged();
                 }, throwable -> {
                     binding.progressLoadingStarred.setVisibility(View.GONE);
-                    Timber.e(throwable, null);
+                    Timber.tag(TAG).e(throwable, null);
                 });
     }
 
