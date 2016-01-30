@@ -4,7 +4,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="112dp">
+        android:layout_height="112dp"
+        android:background="?attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/text_full_name_repository"
