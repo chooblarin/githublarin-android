@@ -9,12 +9,15 @@ import com.google.gson.annotations.SerializedName;
 public class User implements Parcelable {
 
     @Expose
+    @SerializedName("id")
     public long id;
 
     @Expose
+    @SerializedName("login")
     public String login;
 
     @Expose
+    @SerializedName("name")
     public String name;
 
     @Expose
@@ -22,8 +25,10 @@ public class User implements Parcelable {
     public String avatarUrl;
 
     @Expose
+    @SerializedName("location")
     public String location;
 
+    @Expose
     @SerializedName("created_at")
     public String createdAt;
 
@@ -40,9 +45,11 @@ public class User implements Parcelable {
     public int publicGists;
 
     @Expose
+    @SerializedName("following")
     public int following;
 
     @Expose
+    @SerializedName("followers")
     public int followers;
 
     @Override

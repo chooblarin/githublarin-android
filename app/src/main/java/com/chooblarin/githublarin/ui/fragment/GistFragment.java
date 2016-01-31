@@ -86,5 +86,6 @@ public class GistFragment extends BaseFragment implements OnItemClickListener {
 
     @Override
     public void onItemClick(View view, int position) {
+        Gist gist = gistAdapter.getItem(position);
     }
 }

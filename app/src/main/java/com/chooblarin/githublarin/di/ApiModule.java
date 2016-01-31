@@ -3,13 +3,18 @@ package com.chooblarin.githublarin.di;
 import com.chooblarin.githublarin.BuildConfig;
 import com.chooblarin.githublarin.api.auth.AuthInterceptor;
 import com.chooblarin.githublarin.api.client.GitHubService;
+import com.chooblarin.githublarin.model.GistFile;
+import com.chooblarin.githublarin.serializer.GistFilesDeserializer;
 import com.chooblarin.githublarin.serializer.LocalDateTimeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import org.threeten.bp.LocalDateTime;
+
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -41,6 +46,10 @@ public class ApiModule {
     public GitHubService provideGitHubService(OkHttpClient okHttpClient) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .registerTypeAdapter(
+                        new TypeToken<List<GistFile>>() {
+                        }.getType(),
+                        new GistFilesDeserializer())
                 .create();
 
         return new Retrofit.Builder()
