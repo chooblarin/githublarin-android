@@ -41,10 +41,7 @@ public class GistAdapter extends ArrayRecyclerAdapter<Gist, GistAdapter.ViewHold
         Gist gist = getItem(position);
         ListItemGistBinding binding = holder.binding;
         binding.imageOwnerAvatarGist.setImageURI(Uri.parse(gist.owner.avatarUrl));
-        String title = String.format("%s/%s",
-                gist.owner.login,
-                !gist.files.isEmpty() ? gist.files.get(0).filename : "");
-        binding.textTitleGist.setText(title);
+        binding.textTitleGist.setText(gist.getTitle());
         binding.textDescriptionGist.setText(gist.description);
 
         Context context = holder.itemView.getContext();

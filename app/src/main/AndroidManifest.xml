@@ -42,6 +42,7 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.GistDetailActivity" />
         <activity android:name=".ui.activity.MyPageActivity" />
         <activity android:name=".ui.activity.RepositoryDetailActivity" />
         <activity android:name=".ui.activity.UnicornActivity" />

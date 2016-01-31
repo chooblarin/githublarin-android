@@ -15,6 +15,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.FragmentGistBinding;
 import com.chooblarin.githublarin.model.Gist;
+import com.chooblarin.githublarin.ui.activity.GistDetailActivity;
 import com.chooblarin.githublarin.ui.adapter.GistAdapter;
 import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.trello.rxlifecycle.FragmentEvent;
@@ -87,5 +88,6 @@ public class GistFragment extends BaseFragment implements OnItemClickListener {
     @Override
     public void onItemClick(View view, int position) {
         Gist gist = gistAdapter.getItem(position);
+        startActivity(GistDetailActivity.createIntent(getActivity(), gist));
     }
 }
