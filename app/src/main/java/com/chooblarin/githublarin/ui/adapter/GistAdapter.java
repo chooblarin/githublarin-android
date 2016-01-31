@@ -1,65 +1,49 @@
 package com.chooblarin.githublarin.ui.adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.databinding.ListItemGistBinding;
 import com.chooblarin.githublarin.model.Gist;
 
-import java.util.ArrayList;
-import java.util.List;
+public class GistAdapter extends ArrayRecyclerAdapter<Gist, GistAdapter.ViewHolder> {
 
-public class GistAdapter extends RecyclerView.Adapter<GistAdapter.ViewHolder> {
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView gistId;
-        TextView description;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            gistId = (TextView) itemView.findViewById(R.id.text_gist_id);
-            description = (TextView) itemView.findViewById(R.id.text_gist_description);
-        }
-    }
-
-    private LayoutInflater inflater;
-    private List<Gist> gists;
-
-    public GistAdapter(Context context) {
-        inflater = LayoutInflater.from(context);
-        gists = new ArrayList<>();
+    public GistAdapter(@NonNull Context context) {
+        super(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.list_item_gist, parent, false);
-        return new ViewHolder(view);
+        View view = inflater.inflate(ViewHolder.LAYOUT_ID, parent, false);
+        final ViewHolder holder = new ViewHolder(view);
+        view.setOnClickListener(v -> {
+            int position = holder.getAdapterPosition();
+            dispatchItemClickEvent(v, position);
+        });
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Gist gist = gists.get(position);
-        holder.gistId.setText(gist.id);
-        holder.description.setText(gist.description);
+        Gist gist = getItem(position);
+        holder.binding.textGistId.setText(gist.id);
+        holder.binding.textGistDescription.setText(gist.description);
     }
 
-    @Override
-    public int getItemCount() {
-        return gists.size();
-    }
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-    public void addAll(List<Gist> gists) {
-        this.gists.addAll(gists);
-        notifyDataSetChanged();
-    }
+        final static int LAYOUT_ID = R.layout.list_item_gist;
 
-    public void setData(List<Gist> gists) {
-        this.gists.clear();
-        addAll(gists);
+        final private ListItemGistBinding binding;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            binding = DataBindingUtil.bind(itemView);
+        }
     }
 }

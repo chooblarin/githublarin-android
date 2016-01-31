@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="96dp"
-    android:layout_margin="8dp"
-    android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/cbr_color_deep_dark">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        style="@style/Widget.CardContent"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="96dp"
+        android:layout_margin="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@color/cbr_color_deep_dark">
 
-        <TextView
-            android:id="@+id/text_gist_id"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            style="@style/Widget.CardContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            tools:text="796260d921d477391331" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_gist_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            tools:text="四則演算器 (JavaScript ver.)" />
+            <TextView
+                android:id="@+id/text_gist_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                tools:text="796260d921d477391331" />
 
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/text_gist_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                tools:text="四則演算器 (JavaScript ver.)" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</layout>
+

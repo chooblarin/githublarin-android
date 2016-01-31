@@ -16,13 +16,14 @@ import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.FragmentGistBinding;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.ui.adapter.GistAdapter;
+import com.chooblarin.githublarin.ui.listener.OnItemClickListener;
 import com.trello.rxlifecycle.FragmentEvent;
 
 import java.util.List;
 
 import timber.log.Timber;
 
-public class GistFragment extends BaseFragment {
+public class GistFragment extends BaseFragment implements OnItemClickListener {
 
     private GitHubApiClient apiClient;
     private GistAdapter gistAdapter;
@@ -33,6 +34,7 @@ public class GistFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         gistAdapter = new GistAdapter(activity);
+        gistAdapter.setOnItemClickListener(this);
     }
 
     @Nullable
@@ -68,7 +70,9 @@ public class GistFragment extends BaseFragment {
                 .compose(this.<List<Gist>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(_gists -> {
                     binding.progressLoadingGist.setVisibility(View.GONE);
-                    gistAdapter.setData(_gists);
+                    gistAdapter.clear();
+                    gistAdapter.addAll(_gists);
+                    gistAdapter.notifyDataSetChanged();
                 }, throwable -> {
                     binding.progressLoadingGist.setVisibility(View.GONE);
                     Timber.e(throwable, null);
@@ -78,5 +82,9 @@ public class GistFragment extends BaseFragment {
     private void setupGistListView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(gistAdapter);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
     }
 }
