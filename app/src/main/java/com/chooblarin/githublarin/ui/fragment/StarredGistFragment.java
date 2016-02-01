@@ -71,7 +71,17 @@ public class StarredGistFragment extends BaseFragment implements OnItemClickList
 
     private void loadStarredGist() {
         binding.progressLoadingStarredGist.setVisibility(View.VISIBLE);
-        // load starred gists
+        apiClient.starredGists()
+                .compose(this.<List<Gist>>bindUntilEvent(FragmentEvent.STOP))
+                .subscribe(_gists -> {
+                    binding.progressLoadingStarredGist.setVisibility(View.GONE);
+                    gistAdapter.clear();
+                    gistAdapter.addAll(_gists);
+                    gistAdapter.notifyDataSetChanged();
+                }, throwable -> {
+                    binding.progressLoadingStarredGist.setVisibility(View.GONE);
+                    Timber.e(throwable, null);
+                });
     }
 
     @Override

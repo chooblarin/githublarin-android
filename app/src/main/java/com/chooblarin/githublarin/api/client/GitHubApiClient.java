@@ -120,6 +120,11 @@ public class GitHubApiClient {
                 .compose(applySchedulers());
     }
 
+    public Observable<List<Gist>> starredGists() {
+        return gitHubService.starredGists()
+                .compose(applySchedulers());
+    }
+
     public Observable<List<Repository>> starredRepositories() {
         String username = credential.username();
         return gitHubService.starredRepositories(null != username ? username : "")

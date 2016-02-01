@@ -30,6 +30,9 @@ public interface GitHubService {
     @GET("/gists")
     Observable<List<Gist>> gists();
 
+    @GET("/gists/starred")
+    Observable<List<Gist>> starredGists();
+
     @GET("/users/{username}")
     Observable<User> user(@Path("username") String username);
 
