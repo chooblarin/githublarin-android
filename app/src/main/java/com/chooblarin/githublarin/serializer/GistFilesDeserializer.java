@@ -22,9 +22,19 @@ public class GistFilesDeserializer implements JsonDeserializer<List<GistFile>> {
         Set<Map.Entry<String, JsonElement>> entries = jsonObject.entrySet();
         List<GistFile> gistFiles = new ArrayList<>(entries.size());
         for (Map.Entry<String, JsonElement> entry : entries) {
-            GistFile gistFile = GistFile.createFrom(entry.getValue().getAsJsonObject());
+            GistFile gistFile = parseGistFile(entry.getValue().getAsJsonObject());
             gistFiles.add(gistFile);
         }
         return gistFiles;
+    }
+
+    public GistFile parseGistFile(JsonObject jsonObject) {
+        GistFile gistFile = new GistFile();
+        gistFile.filename = jsonObject.get("filename").getAsString();
+        gistFile.type = jsonObject.get("type").getAsString();
+        gistFile.language = jsonObject.get("language").getAsString();
+        gistFile.rawUrl = jsonObject.get("raw_url").getAsString();
+        gistFile.size = jsonObject.get("size").getAsLong();
+        return gistFile;
     }
 }

@@ -36,16 +36,6 @@ public class GistFile implements Parcelable {
         }
     };
 
-    public static GistFile createFrom(JsonObject jsonObject) {
-        GistFile gistFile = new GistFile();
-        gistFile.filename = jsonObject.get("filename").getAsString();
-        gistFile.type = jsonObject.get("type").getAsString();
-        gistFile.language = jsonObject.get("language").getAsString();
-        gistFile.rawUrl = jsonObject.get("raw_url").getAsString();
-        gistFile.size = jsonObject.get("size").getAsLong();
-        return gistFile;
-    }
-
     @Override
     public int describeContents() {
         return 0;
