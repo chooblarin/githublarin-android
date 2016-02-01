@@ -1,6 +1,5 @@
 package com.chooblarin.githublarin.ui.fragment;
 
-import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +12,7 @@ import android.view.ViewGroup;
 import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
-import com.chooblarin.githublarin.databinding.FragmentGistBinding;
+import com.chooblarin.githublarin.databinding.FragmentStarredGistFragmentBinding;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.ui.activity.GistDetailActivity;
 import com.chooblarin.githublarin.ui.adapter.GistAdapter;
@@ -24,38 +23,37 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class GistFragment extends BaseFragment implements OnItemClickListener {
+public class StarredGistFragment extends BaseFragment implements OnItemClickListener {
 
     private GitHubApiClient apiClient;
     private GistAdapter gistAdapter;
 
-    FragmentGistBinding binding;
+    FragmentStarredGistFragmentBinding binding;
 
     @Override
     protected void setupComponent() {
         apiClient = Application.get(getContext()).getAppComponent().apiClient();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        gistAdapter = new GistAdapter(activity);
-        gistAdapter.setOnItemClickListener(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_gist, container, false);
+        binding = DataBindingUtil
+                .inflate(inflater, R.layout.fragment_starred_gist_fragment, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupGistListView(binding.recyclerviewGist);
-        setup();
+        setupGistListView(binding.recyclerviewStarredGist);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadStarredGist();
     }
 
     @Override
@@ -64,25 +62,16 @@ public class GistFragment extends BaseFragment implements OnItemClickListener {
         binding.unbind();
     }
 
-    private void setup() {
-        binding.progressLoadingGist.setVisibility(View.VISIBLE);
-
-        apiClient.gists()
-                .compose(this.<List<Gist>>bindUntilEvent(FragmentEvent.STOP))
-                .subscribe(_gists -> {
-                    binding.progressLoadingGist.setVisibility(View.GONE);
-                    gistAdapter.clear();
-                    gistAdapter.addAll(_gists);
-                    gistAdapter.notifyDataSetChanged();
-                }, throwable -> {
-                    binding.progressLoadingGist.setVisibility(View.GONE);
-                    Timber.e(throwable, null);
-                });
-    }
-
     private void setupGistListView(RecyclerView recyclerView) {
+        gistAdapter = new GistAdapter(getActivity());
+        gistAdapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(gistAdapter);
+    }
+
+    private void loadStarredGist() {
+        binding.progressLoadingStarredGist.setVisibility(View.VISIBLE);
+        // load starred gists
     }
 
     @Override
