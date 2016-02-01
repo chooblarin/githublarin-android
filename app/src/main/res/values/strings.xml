@@ -32,4 +32,7 @@
     <string name="drawer_sub_header">Others</string>
 
     <string name="empty_notification">No notifications</string>
+
+    <string name="starred_gist">Starred</string>
+    <string name="my_gist">Yours</string>
 </resources>
