@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_item_event"
+            android:id="@+id/nav_item_feed"
             android:checked="true"
             android:icon="@drawable/ic_subject_black_24dp"
             android:title="@string/drawer_item_feed" />

@@ -28,8 +28,6 @@ import com.chooblarin.githublarin.ui.fragment.StarredRepositoryFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import javax.inject.Inject;
-
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -48,10 +46,15 @@ public class MainActivity extends BaseActivity {
     TextView userNameText;
     TextView userLoginText;
 
-    @Inject
     GitHubApiClient apiClient;
 
     private ActivityMainBinding binding;
+    private int selectedPageId = R.id.nav_item_feed;
+
+    @Override
+    protected void setupComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class MainActivity extends BaseActivity {
         setupToolbar(binding.toolbarMain);
         setupDrawerContent();
         setupNavigationView(binding.navigationView);
-        showContent(R.id.nav_item_event);
+        showContentPage(selectedPageId);
 
         User user = getIntent().getParcelableExtra(EXTRA_USER);
         setupUserData(user);
@@ -110,11 +113,6 @@ public class MainActivity extends BaseActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-    @Override
-    protected void setupComponent() {
-        apiClient = Application.get(this).getAppComponent().apiClient();
-    }
-
     public void showMyPage() {
         binding.drawerLayout.closeDrawers();
         Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
@@ -148,14 +146,15 @@ public class MainActivity extends BaseActivity {
         binding.navigationView.setNavigationItemSelectedListener(menuItem -> {
             menuItem.setChecked(true);
             binding.drawerLayout.closeDrawers();
-            showContent(menuItem.getItemId());
+            selectedPageId = menuItem.getItemId();
+            showContentPage(selectedPageId);
             return true;
         });
     }
 
-    private void showContent(int menuId) {
+    private void showContentPage(int menuId) {
         switch (menuId) {
-            case R.id.nav_item_event:
+            case R.id.nav_item_feed:
                 showFragment(new FeedFragment(), false);
                 break;
 

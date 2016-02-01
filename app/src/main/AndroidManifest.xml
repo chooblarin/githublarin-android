@@ -23,7 +23,8 @@
         <activity android:name=".ui.activity.LoginActivity" />
         <activity
             android:name=".ui.activity.MainActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.NotificationListActivity" />
         <!-- <activity android:name=".ui.activity.NotificationDetailActivity" /> -->
         <activity android:name=".ui.activity.FeedDetailActivity" />
