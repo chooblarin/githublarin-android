@@ -23,8 +23,8 @@ import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityMainBinding;
 import com.chooblarin.githublarin.model.User;
 import com.chooblarin.githublarin.ui.fragment.FeedFragment;
-import com.chooblarin.githublarin.ui.fragment.GistFragment;
-import com.chooblarin.githublarin.ui.fragment.StarredFragment;
+import com.chooblarin.githublarin.ui.fragment.MyGistFragment;
+import com.chooblarin.githublarin.ui.fragment.StarredRepositoryFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -160,11 +160,11 @@ public class MainActivity extends BaseActivity {
                 break;
 
             case R.id.nav_item_gist:
-                showFragment(new GistFragment(), false);
+                showFragment(new MyGistFragment(), false);
                 break;
 
             case R.id.nav_item_starred:
-                showFragment(new StarredFragment(), false);
+                showFragment(new StarredRepositoryFragment(), false);
                 break;
         }
     }

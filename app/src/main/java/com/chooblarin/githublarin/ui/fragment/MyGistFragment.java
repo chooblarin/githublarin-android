@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
-import com.chooblarin.githublarin.databinding.FragmentGistBinding;
+import com.chooblarin.githublarin.databinding.FragmentMyGistBinding;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.ui.activity.GistDetailActivity;
 import com.chooblarin.githublarin.ui.adapter.GistAdapter;
@@ -24,12 +24,12 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class GistFragment extends BaseFragment implements OnItemClickListener {
+public class MyGistFragment extends BaseFragment implements OnItemClickListener {
 
     private GitHubApiClient apiClient;
     private GistAdapter gistAdapter;
 
-    FragmentGistBinding binding;
+    FragmentMyGistBinding binding;
 
     @Override
     protected void setupComponent() {
@@ -47,14 +47,14 @@ public class GistFragment extends BaseFragment implements OnItemClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_gist, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my_gist, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupGistListView(binding.recyclerviewGist);
+        setupGistListView(binding.recyclerviewMyGist);
         setup();
     }
 
@@ -65,17 +65,17 @@ public class GistFragment extends BaseFragment implements OnItemClickListener {
     }
 
     private void setup() {
-        binding.progressLoadingGist.setVisibility(View.VISIBLE);
+        binding.progressLoadingMyGist.setVisibility(View.VISIBLE);
 
         apiClient.gists()
                 .compose(this.<List<Gist>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(_gists -> {
-                    binding.progressLoadingGist.setVisibility(View.GONE);
+                    binding.progressLoadingMyGist.setVisibility(View.GONE);
                     gistAdapter.clear();
                     gistAdapter.addAll(_gists);
                     gistAdapter.notifyDataSetChanged();
                 }, throwable -> {
-                    binding.progressLoadingGist.setVisibility(View.GONE);
+                    binding.progressLoadingMyGist.setVisibility(View.GONE);
                     Timber.e(throwable, null);
                 });
     }

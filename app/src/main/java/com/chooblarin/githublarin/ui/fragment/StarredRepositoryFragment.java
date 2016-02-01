@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
-import com.chooblarin.githublarin.databinding.FragmentStarredBinding;
+import com.chooblarin.githublarin.databinding.FragmentStarredRepositoryBinding;
 import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.ui.activity.RepositoryDetailActivity;
 import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
@@ -24,14 +24,14 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class StarredFragment extends BaseFragment implements OnItemClickListener {
+public class StarredRepositoryFragment extends BaseFragment implements OnItemClickListener {
 
-    public static final String TAG = StarredFragment.class.getSimpleName();
+    public static final String TAG = StarredRepositoryFragment.class.getSimpleName();
 
     private GitHubApiClient apiClient;
     private RepositoryAdapter repositoryAdapter;
 
-    FragmentStarredBinding binding;
+    FragmentStarredRepositoryBinding binding;
 
     @Override
     protected void setupComponent() {
@@ -49,14 +49,14 @@ public class StarredFragment extends BaseFragment implements OnItemClickListener
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_starred, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_starred_repository, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupStarredList(binding.recyclerviewStarred);
+        setupStarredList(binding.recyclerviewStarredRepository);
         setup();
     }
 
@@ -73,17 +73,17 @@ public class StarredFragment extends BaseFragment implements OnItemClickListener
     }
 
     private void setup() {
-        binding.progressLoadingStarred.setVisibility(View.VISIBLE);
+        binding.progressLoadingStarredRepository.setVisibility(View.VISIBLE);
 
         apiClient.starredRepositories()
                 .compose(this.<List<Repository>>bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(_repositories -> {
-                    binding.progressLoadingStarred.setVisibility(View.GONE);
+                    binding.progressLoadingStarredRepository.setVisibility(View.GONE);
                     repositoryAdapter.clear();
                     repositoryAdapter.addAll(_repositories);
                     repositoryAdapter.notifyDataSetChanged();
                 }, throwable -> {
-                    binding.progressLoadingStarred.setVisibility(View.GONE);
+                    binding.progressLoadingStarredRepository.setVisibility(View.GONE);
                     Timber.tag(TAG).e(throwable, null);
                 });
     }
