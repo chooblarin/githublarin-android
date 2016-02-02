@@ -46,6 +46,10 @@
         <activity android:name=".ui.activity.GistDetailActivity" />
         <activity android:name=".ui.activity.MyPageActivity" />
         <activity android:name=".ui.activity.RepositoryDetailActivity" />
+        <activity
+            android:name=".ui.activity.SettingsActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.UnicornActivity" />
 
         <provider

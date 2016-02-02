@@ -144,10 +144,8 @@ public class MainActivity extends BaseActivity {
 
     private void setupDrawerContent() {
         binding.navigationView.setNavigationItemSelectedListener(menuItem -> {
-            menuItem.setChecked(true);
             binding.drawerLayout.closeDrawers();
-            selectedPageId = menuItem.getItemId();
-            showContentPage(selectedPageId);
+            showContentPage(menuItem.getItemId());
             return true;
         });
     }
@@ -155,15 +153,22 @@ public class MainActivity extends BaseActivity {
     private void showContentPage(int menuId) {
         switch (menuId) {
             case R.id.nav_item_feed:
+                selectedPageId = menuId;
                 showFragment(new FeedFragment(), false);
                 break;
 
             case R.id.nav_item_gist:
+                selectedPageId = menuId;
                 showFragment(new GistFragment(), false);
                 break;
 
             case R.id.nav_item_starred:
+                selectedPageId = menuId;
                 showFragment(new StarredRepositoryFragment(), false);
+                break;
+
+            case R.id.nav_item_settings:
+                startActivity(SettingsActivity.createIntent(this));
                 break;
         }
     }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_medium"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/cbr_color_deep_dark">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_about"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/size_medium"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/space_medium"
+                        android:text="About"
+                        android:textSize="@dimen/text_size_large" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:id="@+id/text_app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/space_large"
+                android:textSize="@dimen/text_size_large"
+                tools:text="v0.0.0 (1)" />
+        </LinearLayout>
+    </ScrollView>
+</layout>
