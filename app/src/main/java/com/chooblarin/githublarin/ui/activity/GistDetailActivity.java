@@ -41,6 +41,12 @@ public class GistDetailActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding.unbind();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (android.R.id.home == itemId) {

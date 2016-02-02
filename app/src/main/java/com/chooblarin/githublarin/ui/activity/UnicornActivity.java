@@ -29,6 +29,12 @@ public class UnicornActivity extends BaseActivity {
         setupToolbar(binding.toolbarUnicorn);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding.unbind();
+    }
+
     private void setupToolbar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

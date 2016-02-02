@@ -59,6 +59,12 @@ public class NotificationListActivity extends BaseActivity implements OnItemClic
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding.unbind();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {

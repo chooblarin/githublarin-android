@@ -41,6 +41,12 @@ public class GistFragment extends BaseFragment {
         setupTabLayoutWithViewPager(binding.tabLayoutGist, binding.viewPagerGist);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        binding.unbind();
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         PagerAdapter pagerAdapter = new PagerAdapter(getChildFragmentManager());
         pagerAdapter.addFragment(new MyGistFragment(), getString(R.string.my_gist));
