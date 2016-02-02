@@ -111,3 +111,5 @@ crashlytics-build.properties
 
 gradle.properties
 *.keystore
+
+app/src/debug/

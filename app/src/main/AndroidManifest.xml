@@ -51,6 +51,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.UnicornActivity" />
+        <activity android:name=".debug.DebugScreenActivity" />
 
         <provider
             android:name=".provider.SuggestionsProvider"

@@ -1,15 +1,23 @@
 package com.chooblarin.githublarin.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentSettingsBinding;
+import com.chooblarin.githublarin.debug.DebugScreenActivity;
+import com.jakewharton.rxbinding.view.RxView;
+import com.trello.rxlifecycle.FragmentEvent;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SettingsFragment extends BaseFragment {
 
@@ -31,6 +39,7 @@ public class SettingsFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setAppVersionName();
+        setupDebugScreen();
     }
 
     @Override
@@ -49,5 +58,17 @@ public class SettingsFragment extends BaseFragment {
             versionName = getString(R.string.unknown_version);
         }
         binding.textAppVersion.setText(versionName);
+    }
+
+    private void setupDebugScreen() {
+        RxView.clicks(binding.textAppVersion)
+                .buffer(250L, TimeUnit.MILLISECONDS)
+                .map(List::size)
+                .filter(count -> count >= 5)
+                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .subscribe(_ignored -> {
+                    Toast.makeText(getContext(), "Debug screen", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getActivity(), DebugScreenActivity.class));
+                });
     }
 }
