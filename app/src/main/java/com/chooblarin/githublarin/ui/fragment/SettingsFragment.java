@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentSettingsBinding;
@@ -50,24 +49,25 @@ public class SettingsFragment extends BaseFragment {
 
     private void setAppVersionName() {
         Context context = getActivity().getApplicationContext();
-        String versionName;
+        String versionNameString;
         try {
-            versionName = context.getPackageManager()
+            String versionName = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0).versionName;
+            versionNameString = getString(R.string.app_version, versionName);
+
         } catch (Exception e) {
-            versionName = getString(R.string.unknown_version);
+            versionNameString = getString(R.string.unknown_version);
         }
-        binding.textAppVersion.setText(versionName);
+        binding.textAppVersion.setText(versionNameString);
     }
 
     private void setupDebugScreen() {
         RxView.clicks(binding.textAppVersion)
-                .buffer(250L, TimeUnit.MILLISECONDS)
+                .buffer(1L, TimeUnit.SECONDS)
                 .map(List::size)
-                .filter(count -> count >= 5)
-                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .filter(count -> 3 <= count)
+                .compose(bindUntilEvent(FragmentEvent.PAUSE))
                 .subscribe(_ignored -> {
-                    Toast.makeText(getContext(), "Debug screen", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getActivity(), DebugScreenActivity.class));
                 });
     }

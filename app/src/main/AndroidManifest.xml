@@ -53,6 +53,10 @@
         <activity android:name=".ui.activity.UnicornActivity" />
         <activity android:name=".debug.DebugScreenActivity" />
 
+        <service
+            android:name=".service.NotificationService"
+            android:exported="false" />
+
         <provider
             android:name=".provider.SuggestionsProvider"
             android:authorities="com.chooblarin.githublarin.provider.SuggestionsProvider"

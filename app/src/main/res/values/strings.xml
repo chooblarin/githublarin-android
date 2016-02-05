@@ -36,5 +36,10 @@
     <string name="my_gist">Yours</string>
 
     <!-- settings -->
+    <string name="settings_notification">Notification</string>
+    <string name="settings_notification_all">All</string>
+    <string name="settings_about">About</string>
+
+    <string name="app_version">Githublarin v %s</string>
     <string name="unknown_version">unknown</string>
 </resources>
