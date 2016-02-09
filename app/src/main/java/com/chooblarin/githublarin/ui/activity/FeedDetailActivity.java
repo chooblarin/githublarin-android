@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -24,6 +25,7 @@ public class FeedDetailActivity extends BaseActivity {
         return intent;
     }
 
+    private Feed feed;
     private ActivityFeedDetailBinding binding;
 
     @Override
@@ -33,7 +35,7 @@ public class FeedDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Feed feed = getIntent().getParcelableExtra(EXTRA_FEED);
+        feed = getIntent().getParcelableExtra(EXTRA_FEED);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_feed_detail);
         setupToolbar(binding.toolbarFeedDetail, feed.title);
         setupWebView(binding.webViewFeedDetail, feed.link);
@@ -46,10 +48,18 @@ public class FeedDetailActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_feed_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (android.R.id.home == itemId) {
             finish();
+        } else if (R.id.share_menu == itemId) {
+            share();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -68,5 +78,12 @@ public class FeedDetailActivity extends BaseActivity {
         // webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webView.loadUrl(url);
+    }
+
+    private void share() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, feed.link);
+        startActivity(Intent.createChooser(shareIntent, "Share link using"));
     }
 }
