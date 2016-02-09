@@ -10,8 +10,11 @@ import com.chooblarin.githublarin.model.User;
 import java.util.List;
 
 import retrofit.Call;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Headers;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -41,6 +44,13 @@ public interface GitHubService {
 
     @GET("/users/{username}/starred")
     Observable<List<Repository>> starredRepositories(@Path("username") String username);
+
+    @PUT("/user/starred/{owner}/{repo}")
+    @Headers("Content-Length: 0")
+    Observable<Void> starRepository(@Path("owner") String owner, @Path("repo") String repo);
+
+    @DELETE("/user/starred/{owner}/{repo}")
+    Observable<Void> unstarRepository(@Path("owner") String owner, @Path("repo") String repo);
 
     @GET("/notifications")
     Observable<List<Notification>> notifications();

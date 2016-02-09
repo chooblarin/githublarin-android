@@ -115,6 +115,14 @@ public class GitHubApiClient {
                 .compose(applySchedulers());
     }
 
+    public Observable<Void> star(Repository repository) {
+        return gitHubService.starRepository(repository.owner.login, repository.name);
+    }
+
+    public Observable<Void> unstar(Repository repository) {
+        return gitHubService.unstarRepository(repository.owner.login, repository.name);
+    }
+
     public Observable<List<Gist>> gists() {
         return gitHubService.gists()
                 .compose(applySchedulers());
