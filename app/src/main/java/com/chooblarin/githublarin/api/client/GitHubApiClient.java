@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit.Call;
 import rx.Observable;
 import rx.Observable.Transformer;
 import rx.Subscriber;
@@ -115,11 +116,11 @@ public class GitHubApiClient {
                 .compose(applySchedulers());
     }
 
-    public Observable<Void> star(Repository repository) {
+    public Call<Void> star(Repository repository) {
         return gitHubService.starRepository(repository.owner.login, repository.name);
     }
 
-    public Observable<Void> unstar(Repository repository) {
+    public Call<Void> unstar(Repository repository) {
         return gitHubService.unstarRepository(repository.owner.login, repository.name);
     }
 

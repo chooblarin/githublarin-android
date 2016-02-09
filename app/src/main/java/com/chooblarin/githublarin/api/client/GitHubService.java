@@ -47,10 +47,10 @@ public interface GitHubService {
 
     @PUT("/user/starred/{owner}/{repo}")
     @Headers("Content-Length: 0")
-    Observable<Void> starRepository(@Path("owner") String owner, @Path("repo") String repo);
+    Call<Void> starRepository(@Path("owner") String owner, @Path("repo") String repo);
 
     @DELETE("/user/starred/{owner}/{repo}")
-    Observable<Void> unstarRepository(@Path("owner") String owner, @Path("repo") String repo);
+    Call<Void> unstarRepository(@Path("owner") String owner, @Path("repo") String repo);
 
     @GET("/notifications")
     Observable<List<Notification>> notifications();

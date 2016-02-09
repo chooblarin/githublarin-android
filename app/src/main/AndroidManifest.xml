@@ -54,6 +54,9 @@
         <activity android:name=".debug.DebugScreenActivity" />
 
         <service
+            android:name=".service.StarRepositoryService"
+            android:exported="false" />
+        <service
             android:name=".service.NotificationService"
             android:exported="false" />
 

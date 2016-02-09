@@ -13,8 +13,11 @@ import android.webkit.WebView;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.ActivityRepositoryDetailBinding;
 import com.chooblarin.githublarin.model.Repository;
+import com.chooblarin.githublarin.service.StarRepositoryService;
+import com.chooblarin.githublarin.ui.widget.likebutton.LikeButtonView;
 
-public class RepositoryDetailActivity extends BaseActivity {
+public class RepositoryDetailActivity extends BaseActivity
+        implements LikeButtonView.OnLikeClickListener {
 
     public static final String EXTRA_REPOSITORY = "extra_repository";
 
@@ -24,7 +27,8 @@ public class RepositoryDetailActivity extends BaseActivity {
         return intent;
     }
 
-    ActivityRepositoryDetailBinding binding;
+    private Repository repository;
+    private ActivityRepositoryDetailBinding binding;
 
     @Override
     protected void setupComponent() {
@@ -35,9 +39,10 @@ public class RepositoryDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_repository_detail);
 
-        Repository repository = getIntent().getParcelableExtra(EXTRA_REPOSITORY);
+        this.repository = getIntent().getParcelableExtra(EXTRA_REPOSITORY);
         setupToolbar(binding.toolbarRepositoryDetail, repository.fullName);
         setupWebView(binding.webViewRepositoryDetail, repository.getWebUrl());
+        setupLikeButton(binding.viewLikeButton);
     }
 
     @Override
@@ -55,6 +60,12 @@ public class RepositoryDetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(boolean checked) {
+        Intent intent = StarRepositoryService.createIntent(this, repository, checked);
+        startService(intent);
+    }
+
     private void setupToolbar(Toolbar toolbar, String title) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -69,5 +80,9 @@ public class RepositoryDetailActivity extends BaseActivity {
         // webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webView.loadUrl(url);
+    }
+
+    private void setupLikeButton(LikeButtonView likeButton) {
+        likeButton.setOnLikeClickListener(this);
     }
 }

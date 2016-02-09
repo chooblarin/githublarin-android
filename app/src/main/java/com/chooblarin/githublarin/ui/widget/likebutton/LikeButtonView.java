@@ -24,9 +24,15 @@ import com.chooblarin.githublarin.R;
  */
 public class LikeButtonView extends FrameLayout implements View.OnClickListener {
 
+    public interface OnLikeClickListener {
+        void onClick(boolean checked);
+    }
+
     private static final DecelerateInterpolator DECELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final AccelerateDecelerateInterpolator ACCELERATE_DECELERATE_INTERPOLATOR = new AccelerateDecelerateInterpolator();
     private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR = new OvershootInterpolator(4);
+
+    public OnLikeClickListener onLikeClickListener;
 
     ImageView starImageView;
     DotsView dotsView;
@@ -69,8 +75,12 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
         isChecked = !isChecked;
         starImageView.setImageResource(isChecked ? R.drawable.ic_star_rate_on : R.drawable.ic_star_rate_off);
 
-        if (animatorSet != null) {
+        if (null != animatorSet) {
             animatorSet.cancel();
+        }
+
+        if (null != onLikeClickListener) {
+            onLikeClickListener.onClick(isChecked);
         }
 
         if (isChecked) {
@@ -156,5 +166,15 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        onLikeClickListener = null;
+    }
+
+    public void setOnLikeClickListener(OnLikeClickListener onLikeClickListener) {
+        this.onLikeClickListener = onLikeClickListener;
     }
 }
