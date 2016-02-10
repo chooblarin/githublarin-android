@@ -23,6 +23,11 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
 
+    <!-- my page -->
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="my_repository">Repository</string>
+
     <!-- drawer -->
     <string name="drawer_item_feed">Feed</string>
     <string name="drawer_item_gist">Gist</string>

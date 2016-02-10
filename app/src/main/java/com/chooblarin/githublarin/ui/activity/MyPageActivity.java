@@ -4,9 +4,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,12 +18,12 @@ import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityMyPageBinding;
-import com.chooblarin.githublarin.model.Repository;
 import com.chooblarin.githublarin.model.User;
-import com.chooblarin.githublarin.ui.adapter.RepositoryAdapter;
+import com.chooblarin.githublarin.ui.fragment.MyRepositoryFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.trello.rxlifecycle.ActivityEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -28,13 +31,14 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MyPageActivity extends BaseActivity {
 
-    private RepositoryAdapter repositoryAdapter;
-
     SimpleDraweeView avatarImage;
-
     ActivityMyPageBinding binding;
-
     GitHubApiClient apiClient;
+
+    @Override
+    protected void setupComponent() {
+        apiClient = Application.get(this).getAppComponent().apiClient();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class MyPageActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_my_page);
         setupToolbar(binding.toolbar);
         setupCollapsingToolbar(binding.containerCollapsingMyPage);
-        setupRepositoryListView(binding.recyclerview);
+        setupViewPager(binding.tabLayoutMyPage, binding.viewPagerMyPage);
         setup();
     }
 
@@ -67,11 +71,6 @@ public class MyPageActivity extends BaseActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-    @Override
-    protected void setupComponent() {
-        apiClient = Application.get(this).getAppComponent().apiClient();
-    }
-
     private void setupToolbar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -83,12 +82,6 @@ public class MyPageActivity extends BaseActivity {
     private void setupCollapsingToolbar(View layout) {
         avatarImage = (SimpleDraweeView) layout.findViewById(R.id.image_avatar_my_page);
         binding.collapsingToolbar.setTitle("chooblarin");
-    }
-
-    private void setupRepositoryListView(RecyclerView recyclerView) {
-        repositoryAdapter = new RepositoryAdapter(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(repositoryAdapter);
     }
 
     private void bindUser(User user) {
@@ -106,19 +99,44 @@ public class MyPageActivity extends BaseActivity {
                 }, throwable -> {
                     Timber.e(throwable, null);
                 });
+    }
 
-        binding.progressLoadingMyRepo.setVisibility(View.VISIBLE);
+    private void setupViewPager(TabLayout tabLayout, ViewPager viewPager) {
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragment(MyRepositoryFragment.newInstance(), getString(R.string.my_repository));
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
 
-        apiClient.repositories()
-                .compose(this.<List<Repository>>bindUntilEvent(ActivityEvent.STOP))
-                .subscribe(_repositories -> {
-                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
-                    repositoryAdapter.clear();
-                    repositoryAdapter.addAll(_repositories);
-                    repositoryAdapter.notifyDataSetChanged();
-                }, throwable -> {
-                    binding.progressLoadingMyRepo.setVisibility(View.GONE);
-                    throwable.printStackTrace();
-                });
+    static class PagerAdapter extends FragmentPagerAdapter {
+
+        final List<String> titles;
+        final List<Fragment> fragments;
+
+        public PagerAdapter(FragmentManager fm) {
+            super(fm);
+            titles = new ArrayList<>();
+            fragments = new ArrayList<>();
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            fragments.add(fragment);
+            titles.add(title);
+        }
     }
 }
