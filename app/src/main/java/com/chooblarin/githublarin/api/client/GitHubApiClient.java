@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.session.SessionManager;
+import com.chooblarin.githublarin.model.CommitActivity;
 import com.chooblarin.githublarin.model.Feed;
 import com.chooblarin.githublarin.model.FeedConverter;
 import com.chooblarin.githublarin.model.FeedParser;
@@ -137,6 +138,13 @@ public class GitHubApiClient {
     public Observable<List<Repository>> starredRepositories() {
         String username = credential.username();
         return gitHubService.starredRepositories(null != username ? username : "")
+                .compose(applySchedulers());
+    }
+
+    public Observable<List<CommitActivity>> commitActivities() {
+        String username = credential.username();
+        return gitHubService
+                .statsCommitActivity(username, "githublarin-android" /* repository name */)
                 .compose(applySchedulers());
     }
 

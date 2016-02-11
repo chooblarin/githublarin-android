@@ -2,6 +2,7 @@ package com.chooblarin.githublarin.api.client;
 
 import com.chooblarin.githublarin.api.response.FeedsResponse;
 import com.chooblarin.githublarin.api.response.SearchResponse;
+import com.chooblarin.githublarin.model.CommitActivity;
 import com.chooblarin.githublarin.model.Gist;
 import com.chooblarin.githublarin.model.Notification;
 import com.chooblarin.githublarin.model.Repository;
@@ -60,4 +61,7 @@ public interface GitHubService {
 
     @GET("/notifications")
     Call<List<Notification>> notificationsSync(@Header("If-Modified-Since") String timestamp);
+
+    @GET("/repos/{owner}/{repo}/stats/commit_activity")
+    Observable<List<CommitActivity>> statsCommitActivity(@Path("owner") String owner, @Path("repo") String repo);
 }

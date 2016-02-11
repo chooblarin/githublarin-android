@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
+import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.FragmentContributionsBinding;
+import com.chooblarin.githublarin.di.AppComponent;
 
 public class ContributionsFragment extends BaseFragment {
 
@@ -16,10 +19,13 @@ public class ContributionsFragment extends BaseFragment {
         return new ContributionsFragment();
     }
 
+    GitHubApiClient apiClient;
     FragmentContributionsBinding binding;
 
     @Override
     protected void setupComponent() {
+        AppComponent appComponent = Application.get(getContext()).getAppComponent();
+        apiClient = appComponent.apiClient();
     }
 
     @Nullable
