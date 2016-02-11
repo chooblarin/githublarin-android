@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.databinding.FragmentSettingsBinding;
-import com.chooblarin.githublarin.debug.DebugScreenActivity;
+import com.github.pedrovgs.lynx.LynxActivity;
+import com.github.pedrovgs.lynx.LynxConfig;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.FragmentEvent;
 
@@ -68,7 +69,16 @@ public class SettingsFragment extends BaseFragment {
                 .filter(count -> 3 <= count)
                 .compose(bindUntilEvent(FragmentEvent.PAUSE))
                 .subscribe(_ignored -> {
-                    startActivity(new Intent(getActivity(), DebugScreenActivity.class));
+                    // startActivity(new Intent(getActivity(), DebugScreenActivity.class));
+                    openLynxActivity();
                 });
+    }
+
+    private void openLynxActivity() {
+        LynxConfig lynxConfig = new LynxConfig();
+        lynxConfig.setMaxNumberOfTracesToShow(4000);
+
+        Intent lynxActivityIntent = LynxActivity.getIntent(getContext(), lynxConfig);
+        startActivity(lynxActivityIntent);
     }
 }
