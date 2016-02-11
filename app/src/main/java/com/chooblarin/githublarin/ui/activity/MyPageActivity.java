@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,15 +13,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.chooblarin.githublarin.Application;
 import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.ActivityMyPageBinding;
 import com.chooblarin.githublarin.model.User;
+import com.chooblarin.githublarin.ui.fragment.ContributionsFragment;
 import com.chooblarin.githublarin.ui.fragment.MyRepositoryFragment;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.chooblarin.githublarin.ui.fragment.PublicActivityFragment;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MyPageActivity extends BaseActivity {
 
-    SimpleDraweeView avatarImage;
     ActivityMyPageBinding binding;
     GitHubApiClient apiClient;
 
@@ -45,9 +45,9 @@ public class MyPageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_my_page);
         setupToolbar(binding.toolbar);
-        setupCollapsingToolbar(binding.containerCollapsingMyPage);
+        setupCollapsingToolbar(binding.collapsingToolbar);
         setupViewPager(binding.tabLayoutMyPage, binding.viewPagerMyPage);
-        setup();
+        setupUser();
     }
 
     @Override
@@ -76,27 +76,22 @@ public class MyPageActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
 
         assert actionBar != null;
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setupCollapsingToolbar(View layout) {
-        avatarImage = (SimpleDraweeView) layout.findViewById(R.id.image_avatar_my_page);
-        binding.collapsingToolbar.setTitle("chooblarin");
+    private void setupCollapsingToolbar(CollapsingToolbarLayout collapsingToolbarLayout) {
+        collapsingToolbarLayout.setTitleEnabled(false);
     }
 
     private void bindUser(User user) {
-        if (null != user.avatarUrl) {
-            avatarImage.setImageURI(Uri.parse(user.avatarUrl));
-        }
         binding.setUser(user);
+        binding.imageAvatarMyPage.setImageURI(Uri.parse(user.avatarUrl));
     }
 
-    private void setup() {
-        apiClient.user()
-                .compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
-                .subscribe(_user -> {
-                    bindUser(_user);
-                }, throwable -> {
+    private void setupUser() {
+        apiClient.user().compose(this.<User>bindUntilEvent(ActivityEvent.STOP))
+                .subscribe(this::bindUser, throwable -> {
                     Timber.e(throwable, null);
                 });
     }
@@ -104,6 +99,9 @@ public class MyPageActivity extends BaseActivity {
     private void setupViewPager(TabLayout tabLayout, ViewPager viewPager) {
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
         pagerAdapter.addFragment(MyRepositoryFragment.newInstance(), getString(R.string.my_repository));
+        pagerAdapter.addFragment(ContributionsFragment.newInstance(), getString(R.string.my_contributions));
+        pagerAdapter.addFragment(PublicActivityFragment.newInstance(), getString(R.string.my_public_activity));
+
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
