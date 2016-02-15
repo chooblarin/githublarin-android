@@ -113,3 +113,4 @@ gradle.properties
 *.keystore
 
 app/src/debug/
+config.xml

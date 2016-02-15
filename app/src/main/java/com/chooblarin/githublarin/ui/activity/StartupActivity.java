@@ -1,5 +1,6 @@
 package com.chooblarin.githublarin.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -9,6 +10,7 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.auth.Credential;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.di.AppComponent;
+import com.chooblarin.githublarin.gcm.RegistrationService;
 import com.chooblarin.githublarin.model.User;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -23,6 +25,10 @@ public class StartupActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(this, RegistrationService.class);
+        startService(intent);
+
         setContentView(R.layout.activity_startup);
         checkAuth();
     }
