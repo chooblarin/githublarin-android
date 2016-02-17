@@ -12,8 +12,16 @@ import com.chooblarin.githublarin.R;
 import com.chooblarin.githublarin.api.client.GitHubApiClient;
 import com.chooblarin.githublarin.databinding.FragmentContributionsBinding;
 import com.chooblarin.githublarin.di.AppComponent;
+import com.chooblarin.githublarin.model.CommitActivity;
+import com.trello.rxlifecycle.FragmentEvent;
+
+import rx.Observable;
+import rx.functions.Action1;
+import timber.log.Timber;
 
 public class ContributionsFragment extends BaseFragment {
+
+    private static final String TAG = ContributionsFragment.class.getSimpleName();
 
     public static ContributionsFragment newInstance() {
         return new ContributionsFragment();
@@ -43,8 +51,26 @@ public class ContributionsFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        loadContributions();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         binding.unbind();
+    }
+
+    private void loadContributions() {
+        apiClient.commitActivities()
+                .flatMap(Observable::from)
+                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .subscribe(new Action1<CommitActivity>() {
+                    @Override
+                    public void call(CommitActivity commitActivity) {
+                        Timber.tag(TAG).d(commitActivity.toString());
+                    }
+                });
     }
 }

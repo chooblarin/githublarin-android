@@ -141,11 +141,18 @@ public class GitHubApiClient {
                 .compose(applySchedulers());
     }
 
+    public Observable<List<CommitActivity>> commitActivities(String username) {
+        return gitHubService
+                .usersRepositories(username)
+                .flatMap(Observable::from)
+                .map(repository -> repository.name)
+                .flatMap(name -> gitHubService.statsCommitActivity(username, name))
+                .compose(applySchedulers());
+    }
+
     public Observable<List<CommitActivity>> commitActivities() {
         String username = credential.username();
-        return gitHubService
-                .statsCommitActivity(username, "githublarin-android" /* repository name */)
-                .compose(applySchedulers());
+        return commitActivities(username);
     }
 
     private Observable<String> execRequest(String url) {

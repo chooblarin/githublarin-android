@@ -3,6 +3,8 @@ package com.chooblarin.githublarin.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 public class CommitActivity {
 
     @SerializedName("days")
@@ -16,4 +18,9 @@ public class CommitActivity {
     @SerializedName("weeks")
     @Expose
     public long week;
+
+    @Override
+    public String toString() {
+        return Arrays.toString(days);
+    }
 }
